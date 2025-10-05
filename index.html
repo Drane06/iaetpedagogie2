@@ -27,7 +27,13 @@
             --blue-hover: #3a7bc8;
             --grey-light: #f4f4f4;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, var(--primary-dark) 0%, #1c6d48 50%, #2f8e65 100%);
@@ -37,6 +43,7 @@
             position: relative;
             overflow-x: hidden;
         }
+
         body::before {
             content: '';
             position: fixed;
@@ -50,27 +57,14 @@
             z-index: 0;
             pointer-events: none;
         }
-        .container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; }
-        header {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 30px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-            border: 1px solid rgba(27, 133, 90, 0.2);
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        h1 {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 2.5em;
-            margin-bottom: 15px;
-            font-weight: 800;
-        }
-        .subtitle { color: var(--text-light); font-size: 1.1em; line-height: 1.6; }
+
         .section {
             background: var(--card-bg);
             backdrop-filter: blur(20px);
@@ -81,7 +75,12 @@
             border: 1px solid rgba(27, 133, 90, 0.2);
             display: none;
         }
-        .section.active { display: block; animation: fadeIn 0.8s ease-out; }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.8s ease-out;
+        }
+
         .section h2 {
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             -webkit-background-clip: text;
@@ -91,6 +90,7 @@
             margin-bottom: 20px;
             text-align: center;
         }
+
         .instruction {
             text-align: center;
             margin-bottom: 25px;
@@ -101,6 +101,20 @@
             line-height: 1.6;
             border-left: 5px solid var(--primary);
         }
+
+        .task-area {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .task-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
         .card {
             background: white;
             padding: 12px;
@@ -111,76 +125,47 @@
             font-size: 0.9em;
             font-weight: 600;
         }
+
         .card:hover {
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transform: translateY(-1px);
         }
-        .new-game-container {
-            padding: 20px;
-            background: var(--grey-light);
-            border-radius: 15px;
-        }
-        .progress {
-            height: 10px;
-            background-color: #ddd;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        .bar {
-            height: 100%;
-            width: 0;
-            background-color: var(--primary-light);
-            transition: width 0.5s ease-in-out;
-            border-radius: 5px;
-        }
-        .task-area h3, .source-area h3 {
-            font-size: 1.1em;
-            font-weight: 700;
-            color: var(--primary-dark);
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--primary-light);
-            padding-bottom: 5px;
-        }
-        .task-area {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .task-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-        }
+
         .card.task {
             cursor: pointer;
             border: 2px solid transparent;
             text-align: center;
         }
-        .card.task:hover { border-color: var(--accent-blue); }
+
+        .card.task:hover {
+            border-color: var(--accent-blue);
+        }
+
         .card.task.selected {
             border-color: var(--accent-blue);
             background-color: #e6f7ff;
             box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
             transform: scale(1.02);
         }
+
         .card.task.completed {
             background-color: var(--success-color);
             color: white;
             pointer-events: none;
             cursor: default;
             border-color: var(--primary-dark);
-            opacity: 0.6;
+            opacity: 0.8;
             text-decoration: line-through;
         }
+
         .drop-zone-container {
             display: flex;
             gap: 20px;
             margin-bottom: 20px;
         }
+
         .drop-slot {
-            flex-grow: 1;
+            flex: 1;
             min-height: 120px;
             border: 3px dashed #aaa;
             border-radius: 12px;
@@ -188,30 +173,48 @@
             align-items: center;
             justify-content: center;
             padding: 10px;
-            transition: background-color 0.2s, border-color 0.2s;
+            transition: all 0.2s;
         }
+
+        .drop-slot.tool {
+            border-color: var(--primary-light);
+        }
+
+        .drop-slot.precaution {
+            border-color: var(--accent-orange);
+        }
+
         .drop-slot.drag-over {
             background-color: rgba(74, 144, 226, 0.1);
             border-color: var(--accent-blue);
         }
-        .drop-slot.tool { border-color: var(--primary-light); }
-        .drop-slot.precaution { border-color: var(--accent-orange); }
+
+        .drop-slot.filled {
+            border-style: solid;
+            background-color: rgba(27, 133, 90, 0.05);
+        }
+
         .slot-label {
             color: var(--text-light);
             font-style: italic;
             font-weight: 500;
         }
-        .drop-slot.filled .slot-label { display: none; }
-        .dropped-card {
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            height: auto;
-            margin: 0;
-            cursor: default;
-            border: 2px solid transparent;
+
+        .drop-slot.filled .slot-label {
+            display: none;
         }
-        .drop-slot.tool .dropped-card { background: #e6f7ff; border-color: var(--primary); }
-        .drop-slot.precaution .dropped-card { background: #fffbe6; border-color: var(--accent-orange); }
+
+        .dropped-card {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: default;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
         .source-area {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -220,54 +223,97 @@
             padding: 20px;
             border-radius: 10px;
         }
-        .source-column h3 {
-            color: var(--primary-dark);
+
+        .source-column .card {
+            cursor: grab;
+            margin-bottom: 10px;
         }
-        .source-column .card { cursor: grab; }
-        .card.tool { background-color: #f0f8ff; border-left: 3px solid var(--primary); }
-        .card.precaution { background-color: #fffaf0; border-left: 3px solid var(--accent-orange); }
-        .card-title { font-weight: 700; color: var(--text); }
-        .card-note, .card-desc { font-size: 0.8em; color: var(--text-light); margin-top: 4px; line-height: 1.3; }
-        .card.dragging, .card.hidden { opacity: 0; }
+
+        .card.tool {
+            background-color: #f0f8ff;
+            border-left: 3px solid var(--primary);
+        }
+
+        .card.precaution {
+            background-color: #fffaf0;
+            border-left: 3px solid var(--accent-orange);
+        }
+
+        .card-title {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .card-note, .card-desc {
+            font-size: 0.8em;
+            color: var(--text-light);
+            line-height: 1.3;
+        }
+
         .action-buttons {
             display: flex;
             justify-content: center;
             gap: 15px;
             margin-top: 20px;
         }
+
         .btn {
             padding: 10px 25px;
             border-radius: 25px;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
         }
+
         .btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none !important;
             box-shadow: none !important;
         }
+
         .btn-validate {
             background: var(--primary);
             color: white;
+            border: none;
             box-shadow: 0 4px 10px rgba(27, 133, 90, 0.3);
         }
+
         .btn-validate:not(:disabled):hover {
             background: var(--primary-light);
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(27, 133, 90, 0.4);
         }
+
         .btn-reset {
             background: var(--accent-red);
             color: white;
+            border: none;
             box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
         }
-        .btn-reset:not(:disabled):hover {
+
+        .btn-reset:hover {
             background: #c0392b;
             transform: translateY(-2px);
             box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
         }
+
+        .progress {
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            width: 0;
+            background-color: var(--primary-light);
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+
         #customModal {
             position: fixed;
             top: 0;
@@ -280,7 +326,11 @@
             justify-content: center;
             z-index: 1000;
         }
-        #customModal.show { display: flex; }
+
+        #customModal.show {
+            display: flex;
+        }
+
         #modalBox {
             background: white;
             padding: 30px;
@@ -291,11 +341,13 @@
             text-align: center;
             animation: fadeIn 0.3s ease-out;
         }
+
         #modalTitle {
             font-size: 1.5em;
             margin-bottom: 15px;
             font-weight: 800;
         }
+
         #modalMessage {
             font-size: 1em;
             line-height: 1.6;
@@ -303,12 +355,14 @@
             text-align: left;
             color: var(--text);
         }
+
         #modalMessage h3 {
             font-size: 1.2em;
             color: var(--primary-dark);
             margin-bottom: 10px;
             text-align: center;
         }
+
         .schema-step {
             position: relative;
             padding: 25px;
@@ -319,7 +373,12 @@
             cursor: pointer;
             transition: var(--transition);
         }
-        .schema-step:hover { transform: translateX(5px); box-shadow: 0 5px 20px rgba(27, 133, 90, 0.2); }
+
+        .schema-step:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(27, 133, 90, 0.2);
+        }
+
         .schema-step-content {
             display: none;
             margin-top: 15px;
@@ -329,7 +388,12 @@
             color: #555;
             font-style: italic;
         }
-        .schema-step.active .schema-step-content { display: block; animation: fadeIn 0.5s ease-out; }
+
+        .schema-step.active .schema-step-content {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
         .step-icon-container {
             display: inline-flex;
             align-items: center;
@@ -344,6 +408,7 @@
             margin-right: 15px;
             flex-shrink: 0;
         }
+
         .action-btn {
             display: block;
             margin: 25px auto;
@@ -358,21 +423,28 @@
             transition: var(--transition);
             box-shadow: 0 10px 30px rgba(27, 133, 90, 0.3);
         }
-        .action-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(27, 133, 90, 0.4); }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(27, 133, 90, 0.4);
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
         @media (max-width: 900px) {
             .source-area { grid-template-columns: 1fr; }
             .drop-zone-container { flex-direction: column; }
             .task-list { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
         }
+
         @media (max-width: 600px) {
             .task-list { grid-template-columns: 1fr; }
         }
 
-        /* NOUVEAUX STYLES POUR LA PARTIE 3 AMÉLIORÉE */
+        /* Styles pour la partie QCM */
         .qcm-container {
             max-width: 900px;
             margin: 30px auto;
@@ -554,294 +626,326 @@
                 grid-template-columns: 1fr 1fr;
             }
         }
+
+        /* Styles pour la partie 4 */
+        .carte {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .boutons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .btn-oui, .btn-non, .btn-nuance {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-oui {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-non {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn-nuance {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- PARTIE 1 : JEU D'ASSOCIATION (inchangée) -->
+        <!-- PARTIE 1 : JEU D'ASSOCIATION -->
         <div class="section active" id="section1">
             <h2>Partie 1 : Association tâche, outil et précautions</h2>
             <div class="instruction">
                 <strong>Objectif :</strong> Associez une tâche (cliquez pour sélectionner) à l'outil IA le plus adapté (glisser-déposer au centre) et à une précaution essentielle.
             </div>
-            <div class="new-game-container" role="application" aria-label="Jeu d'association tâches / outils IA glisser-déposer">
+
+            <div class="new-game-container">
                 <div class="progress"><div class="bar" id="progressBar"></div></div>
+
                 <div class="task-area">
                     <h3>📝 Tâches (Cliquez pour sélectionner)</h3>
                     <div class="task-list" id="taskList">
-                        <div class="card task" data-type="task" data-id="qcm" tabindex="0">Créer un QCM exportable</div>
-                        <div class="card task" data-type="task" data-id="questions" tabindex="0">Générer rapidement des questions pour une évaluation</div>
-                        <div class="card task" data-type="task" data-id="versions" tabindex="0">Proposer plusieurs versions d'un exercice</div>
-                        <div class="card task" data-type="task" data-id="bilan" tabindex="0">Bilan de révision avec explications</div>
-                        <div class="card task" data-type="task" data-id="adapter" tabindex="0">Adapter un document dans différents styles</div>
-                        <div class="card task" data-type="task" data-id="presentation" tabindex="0">Réaliser la présentation d'un cours (slides, support visuel)</div>
-                        <div class="card task" data-type="task" data-id="resume" tabindex="0">Réaliser un résumé audio/vidéo d'un PDF</div>
-                        <div class="card task" data-type="task" data-id="commentaires" tabindex="0">Rédiger des commentaires individualisés</div>
-                        <div class="card task" data-type="task" data-id="feedbacks" tabindex="0">Produire des feedbacks</div>
-                        <div class="card task" data-type="task" data-id="progression" tabindex="0">Construire une progression de séquence (planification)</div>
-                        <div class="card task" data-type="task" data-id="recherche" tabindex="0">Recherches d'information documentées</div>
-                        <div class="card task" data-type="task" data-id="enigmes" tabindex="0">Créer des énigmes pédagogiques / escape game</div>
-                        <div class="card task" data-type="task" data-id="fiche" tabindex="0">Créer une fiche de cours avec images</div>
-                        <div class="card task" data-type="task" data-id="pages_web" tabindex="0">Créer des pages web</div>
-                        <div class="card task" data-type="task" data-id="recherche_progression" tabindex="0">Recherches pour construire le contenu d'un nouveau cours</div>
+                        <div class="card task" data-id="qcm">Créer un QCM exportable</div>
+                        <div class="card task" data-id="questions">Générer rapidement des questions pour une évaluation</div>
+                        <div class="card task" data-id="versions">Proposer plusieurs versions d'un exercice</div>
+                        <div class="card task" data-id="bilan">Bilan de révision avec explications</div>
+                        <div class="card task" data-id="adapter">Adapter un document dans différents styles</div>
+                        <div class="card task" data-id="presentation">Réaliser la présentation d'un cours (slides, support visuel)</div>
+                        <div class="card task" data-id="resume">Réaliser un résumé audio/vidéo d'un PDF</div>
+                        <div class="card task" data-id="commentaires">Rédiger des commentaires individualisés</div>
+                        <div class="card task" data-id="feedbacks">Produire des feedbacks</div>
+                        <div class="card task" data-id="progression">Construire une progression de séquence (planification)</div>
+                        <div class="card task" data-id="recherche">Recherches d'information documentées</div>
+                        <div class="card task" data-id="enigmes">Créer des énigmes pédagogiques / escape game</div>
                     </div>
                 </div>
+
                 <div class="drop-zone-container">
-                    <div class="drop-slot tool" id="toolSlot" data-type="tool" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" ondragenter="dragEnter(event)">
+                    <div class="drop-slot tool" id="toolSlot">
                         <span class="slot-label">Déposez l'Outil ici</span>
                     </div>
-                    <div class="drop-slot precaution" id="precautionSlot" data-type="precaution" ondragover="allowDrop(event)" ondrop="drop(event)" ondragleave="dragLeave(event)" ondragenter="dragEnter(event)">
-                        <span class="slot-label">Déposez la Précautions ici</span>
+                    <div class="drop-slot precaution" id="precautionSlot">
+                        <span class="slot-label">Déposez la Précaution ici</span>
                     </div>
                 </div>
+
                 <div class="action-buttons">
                     <button class="btn btn-validate" id="btnValidate" disabled>✓ Valider l'association</button>
                     <button class="btn btn-reset" id="btnReset">↻ Recommencer l'exercice</button>
                 </div>
-                <div class="source-area" id="sourceArea">
-                    <div class="source-column" aria-labelledby="col-outils-source">
-                        <h3 id="col-outils-source">🤖 Outils IA </h3>
-                        <div class="card-list" id="toolSourceList">
-                            <div class="card tool" data-type="tool" data-id="quizwizard" draggable="true" ondragstart="drag(event)">
+
+                <div class="source-area">
+                    <div class="source-column">
+                        <h3>🤖 Outils IA</h3>
+                        <div id="toolSourceList">
+                            <div class="card tool" data-id="quizwizard" draggable="true">
                                 <div class="card-title">Quiz Wizard</div>
                                 <div class="card-note">Création de compte</div>
                             </div>
-                            <div class="card tool" data-type="tool" data-id="chatgpt_gemini_mistral" draggable="true" ondragstart="drag(event)">
-                                <div class="card-title">ChatGPT, Gemini, Claude, Mistral</div>
+                            <div class="card tool" data-id="chatgpt" draggable="true">
+                                <div class="card-title">ChatGPT/Gemini/Mistral</div>
                                 <div class="card-note">Création de compte</div>
                             </div>
-                            <div class="card tool" data-type="tool" data-id="claude" draggable="true" ondragstart="drag(event)">
-                                <div class="card-title">Claude</div>
-                                <div class="card-note">Création de compte</div>
-                            </div>
-                            <div class="card tool" data-type="tool" data-id="perplexity" draggable="true" ondragstart="drag(event)">
+                            <div class="card tool" data-id="perplexity" draggable="true">
                                 <div class="card-title">Perplexity</div>
                             </div>
-                            <div class="card tool" data-type="tool" data-id="gamma" draggable="true" ondragstart="drag(event)">
+                            <div class="card tool" data-id="gamma" draggable="true">
                                 <div class="card-title">Gamma</div>
                                 <div class="card-note">Création de compte</div>
                             </div>
-                            <div class="card tool" data-type="tool" data-id="notebooklm" draggable="true" ondragstart="drag(event)">
+                            <div class="card tool" data-id="notebooklm" draggable="true">
                                 <div class="card-title">NotebookLM</div>
                                 <div class="card-note">Création de compte</div>
                             </div>
-                            <div class="card tool" data-type="tool" data-id="canva" draggable="true" ondragstart="drag(event)">
+                            <div class="card tool" data-id="canva" draggable="true">
                                 <div class="card-title">Canva</div>
                                 <div class="card-note">Création de compte</div>
                             </div>
                         </div>
                     </div>
-                    <div class="source-column" aria-labelledby="col-precautions-source">
-                        <h3 id="col-precautions-source">⚠️ Précautions </h3>
-                        <div class="card-list" id="precautionSourceList">
-                            <div class="card precaution" data-type="precaution" data-id="verif_fact_pertinence" draggable="true" ondragstart="drag(event)">
+
+                    <div class="source-column">
+                        <h3>⚠️ Précautions</h3>
+                        <div id="precautionSourceList">
+                            <div class="card precaution" data-id="verif_fact_pertinence" draggable="true">
                                 <div class="card-title">Vérification factuelle</div>
-                                <div class="card-desc">Pertinence et exactitude des questions<br>Intention pédagogique (adapter au niveau des élèves)</div>
+                                <div class="card-desc">Pertinence et exactitude des questions<br>Intention pédagogique</div>
                             </div>
-                            <div class="card precaution" data-type="precaution" data-id="renseignement_contexte" draggable="true" ondragstart="drag(event)">
+                            <div class="card precaution" data-id="renseignement_contexte" draggable="true">
                                 <div class="card-title">Renseignement du contexte</div>
                                 <div class="card-desc">Indiquer niveau, durée<br>Compétences visées</div>
                             </div>
-                            <div class="card precaution" data-type="precaution" data-id="intention_pedagogique" draggable="true" ondragstart="drag(event)">
+                            <div class="card precaution" data-id="intention_pedagogique" draggable="true">
                                 <div class="card-title">Intention pédagogique</div>
                                 <div class="card-desc">Équilibrer la difficulté<br>Rester aligné avec le programme</div>
                             </div>
-                            <div class="card precaution" data-type="precaution" data-id="verif_fact_esprit_critique" draggable="true" ondragstart="drag(event)">
+                            <div class="card precaution" data-id="verif_fact_esprit_critique" draggable="true">
                                 <div class="card-title">Vérification factuelle et Esprit Critique</div>
-                                <div class="card-desc">Surtout en sciences/histoire<br>Développer l'esprit critique (inciter les élèves à comparer)</div>
+                                <div class="card-desc">Surtout en sciences/histoire<br>Développer l'esprit critique</div>
                             </div>
-                            <div class="card precaution" data-type="precaution" data-id="intention_pedagogique_ton" draggable="true" ondragstart="drag(event)">
+                            <div class="card precaution" data-id="intention_pedagogique_ton" draggable="true">
                                 <div class="card-title">Intention pédagogique (Ton)</div>
                                 <div class="card-desc">Le changement de ton doit servir l'apprentissage<br>Vérification factuelle</div>
                             </div>
-                            <div class="card precaution" data-type="precaution" data-id="intention_pedagogique_surcharge" draggable="true" ondragstart="drag(event)">
+                            <div class="card precaution" data-id="intention_pedagogique_surcharge" draggable="true">
                                 <div class="card-title">Intention pédagogique (surcharge)</div>
-                                <div class="card-desc">Éviter la surcharge cognitive (Trop d'infos ou de visuels)<br>Vérification factuelle</div>
+                                <div class="card-desc">Éviter la surcharge cognitive<br>Vérification factuelle</div>
                             </div>
-                            <div class="card precaution" data-type="precaution" data-id="verif_confidentialite" draggable="true" ondragstart="drag(event)">
-                                <div class="card-title">Vérification factuelle et Confidentialité/RGPD</div>
-                                <div class="card-desc">Pas de documents internes sensibles<br>Vérification factuelle</div>
+                            <div class="card precaution" data-id="verif_confidentialite" draggable="true">
+                                <div class="card-title">Confidentialité/RGPD</div>
+                                <div class="card-desc">Pas de données sensibles<br>Vérification factuelle</div>
                             </div>
-                            <div class="card precaution" data-type="precaution" data-id="confidentialite_feedback" draggable="true" ondragstart="drag(event)">
-                                <div class="card-title">Confidentialité / RGPD et Feedback</div>
-                                <div class="card-desc">Pas de noms d'élèves<br>Feedback constructif et bienveillant</div>
-                            </div>
-                            <div class="card precaution" data-type="precaution" data-id="verif_croiser_sources" draggable="true" ondragstart="drag(event)">
-                                <div class="card-title">Vérification factuelle (Croiser les sources)</div>
-                                <div class="card-desc">Croiser les sources<br>Développer l'esprit critique</div>
-                            </div>
-                            <div class="card precaution" data-type="precaution" data-id="intention_biais" draggable="true" ondragstart="drag(event)">
-                                <div class="card-title">Intention pédagogique et Biais</div>
-                                <div class="card-desc">Objectif d'apprentissage clair<br>Identification des biais (éviter stéréotypes)</div>
-                            </div>
-                            <div class="card precaution" data-type="precaution" data-id="verif_fact_seule" draggable="true" ondragstart="drag(event)">
-                                <div class="card-title">Vérification factuelle</div>
-                                <div class="card-desc">Vérifier l'exactitude des données<br>Absence d'hallucinations</div>
+                            <div class="card precaution" data-id="confidentialite_feedback" draggable="true">
+                                <div class="card-title">Confidentialité et Feedback</div>
+                                <div class="card-desc">Pas de noms d'élèves<br>Feedback constructif</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="customModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-                <div id="modalBox" tabindex="-1">
-                    <h4 id="modalTitle">Attention !</h4>
+
+            <div id="customModal">
+                <div id="modalBox">
+                    <h3 id="modalTitle">Message</h3>
                     <p id="modalMessage"></p>
-                    <button class="btn btn-validate" id="btnCloseModal">Compris</button>
+                    <button class="btn btn-validate" id="btnCloseModal">OK</button>
                 </div>
             </div>
-            <button class="action-btn" onclick="goToSection(2)" style="margin-top: 40px;">Passer aux axes de transformation ➡️</button>
+
+            <button class="action-btn" onclick="goToSection(2)">Passer aux axes de transformation ➡️</button>
         </div>
 
-        <!-- PARTIE 2 : 5 AXES DE TRANSFORMATION (inchangée) -->
+        <!-- PARTIE 2 : 5 AXES DE TRANSFORMATION -->
         <div class="section" id="section2">
             <h2>Partie 2 : Les 5 axes de la transformation pédagogique</h2>
             <div class="instruction">
-                <strong>Objectif :</strong> Découvrir comment l'IA générative soutient les principes clés d'une pédagogie centrée sur l'humain. Cliquez sur chaque axe pour explorer les bénéfices.
+                <strong>Objectif :</strong> Découvrir comment l'IA générative soutient les principes clés d'une pédagogie centrée sur l'humain.
             </div>
+
             <div style="max-width: 800px; margin: 40px auto; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
                 <div class="schema-step" onclick="toggleStep(this)">
                     <span class="step-icon-container" style="background: linear-gradient(135deg, var(--accent-blue), #3a7bc8);">1</span>
-                    <span style="font-size: 1.3em; font-weight: 700; color: var(--accent-blue);">👤 L'agentivité et l'autonomie de l'élève</span>
+                    <span style="font-size: 1.3em; font-weight: 700; color: var(--accent-blue);">👤 L'agentivité et l'autonomie</span>
                     <div class="schema-step-content">
-                        <p>Les LLM utilisaient intelligemment peuvent agir comme un assistant de travail personnel. Ils  permettent à l'élève de reformuler ses idées, d'obtenir des explications supplémentaires, ou de tester sa compréhension. L'élève devient acteur de son parcours en choisissant son rythme et ses outils de soutien. L'enseignant doit encourager l'esprit critique vis-à-vis des réponses générées.</p>
+                        <p>Les LLM permettent à l'élève de reformuler ses idées, d'obtenir des explications ou de tester sa compréhension, devenant ainsi acteur de son apprentissage.</p>
                     </div>
                 </div>
+
                 <div class="schema-step" onclick="toggleStep(this)">
                     <span class="step-icon-container" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">2</span>
                     <span style="font-size: 1.3em; font-weight: 700; color: var(--primary);">📊 La différenciation pédagogique</span>
                     <div class="schema-step-content">
-                        <p>L'IA générative facilite la création rapide de contenus adaptés à divers profils (besoins spécifiques, niveaux variés, langues). Elle permet de fournir un feedback immédiat et ciblé à chaque élève, rendant la personnalisation d'apprentissage scalable et non chronophage pour l'enseignant. C'est le cœur de l'enrichissement pédagogique.</p>
+                        <p>L'IA facilite la création de contenus adaptés à divers profils et fournit des feedbacks immédiats, rendant la personnalisation scalable.</p>
                     </div>
                 </div>
+
                 <div class="schema-step" onclick="toggleStep(this)">
                     <span class="step-icon-container" style="background: linear-gradient(135deg, var(--accent-orange), #e67e22);">3</span>
                     <span style="font-size: 1.3em; font-weight: 700; color: var(--accent-orange);">💡 La créativité et l'innovation</span>
                     <div class="schema-step-content">
-                        <p>L'IA générative ouvre la porte à des activités inaccessibles auparavant : création de ses propres activités interactives pédagogiques, de chatbots spécialisés pour réviser un sujet complexe, ou de supports multimédias (podcasts, vidéos scriptées) générés par les élèves. Elle stimule la **production** et non la simple consommation d'information.</p>
+                        <p>L'IA ouvre la porte à des activités créatives comme des escape games pédagogiques ou des supports multimédias générés par les élèves.</p>
                     </div>
                 </div>
+
                 <div class="schema-step" onclick="toggleStep(this)">
                     <span class="step-icon-container" style="background: linear-gradient(135deg, var(--accent-purple), #8e44ad);">4</span>
                     <span style="font-size: 1.3em; font-weight: 700; color: var(--accent-purple);">⏳ L'allègement de la charge mentale</span>
                     <div class="schema-step-content">
-                        <p>L'automatisation des tâches répétitives (création de fiches de synthèse, correction différenciées, organisation administrative, premiers jets de QCM) permet à l'enseignant de se recentrer sur l'essentiel : la relation humaine, l'accompagnement individuel et la conception de scénarios complexes**.</p>
+                        <p>L'automatisation des tâches répétitives permet à l'enseignant de se recentrer sur l'essentiel : la relation humaine et l'accompagnement.</p>
                     </div>
                 </div>
-                 <div class="schema-step" onclick="toggleStep(this)" style="border-left: 5px solid var(--primary-dark);">
+
+                <div class="schema-step" onclick="toggleStep(this)">
                     <span class="step-icon-container" style="background: linear-gradient(135deg, var(--primary-dark), #3cb371);">5</span>
                     <span style="font-size: 1.3em; font-weight: 700; color: var(--primary-dark);">🧐 Le développement de la pensée critique</span>
                     <div class="schema-step-content">
-                        <p>L'IA, en tant qu'outil imparfait, est un support idéal pour l'éducation aux médias et à l'information (EMI). L'élève doit apprendre à évaluer la fiabilité des contenus générés (vérification des "hallucinations"), à choisir le bon prompt, et à transformer la réponse brute en un travail personnel de qualité. Cela renforce la métacognition.’esprit critique face à l’IA s’enseigne dès les premières années d’école ;
-
-il repose sur des savoirs solides (sciences, langage, culture numérique) ;
-
-il ne dépend pas uniquement de la manipulation d’outils, mais aussi de la réflexion et du raisonnement argumenté.</p>
+                        <p>L'IA, en tant qu'outil imparfait, est idéale pour développer l'esprit critique des élèves face aux contenus générés.</p>
                     </div>
                 </div>
             </div>
+
             <button class="action-btn" onclick="goToSection(3)">Continuer vers les scénarios d'usage (QCM) 🚀</button>
         </div>
 
-        <!-- PARTIE 3 : VERSION AMÉLIORÉE -->
+        <!-- PARTIE 3 : QCM -->
         <div class="section" id="section3">
-            <h2>Partie 3 : Évaluation des scénarios d'ssage (QCM)</h2>
+            <h2>Partie 3 : Évaluation des scénarios d'usage (QCM)</h2>
             <div class="instruction">
-                <strong>Consigne :</strong> Pour chaque cas, choisissez la pratique qui correspond le mieux à l'<strong>enrichissement pédagogique</strong> centré sur l'humain et l'<strong>agentivité</strong>.
+                <strong>Consigne :</strong> Pour chaque cas, choisissez la pratique qui correspond le mieux à l'enrichissement pédagogique.
             </div>
 
             <div class="qcm-container">
-                <!-- CAS 1 -->
+                <!-- Cas 1 -->
                 <div class="case-study">
                     <div class="case-scenario">
                         <strong>📝 Cas 1 : Gestion de la charge de correction</strong>
                         <div class="qcm-question">
-                            Un enseignant souhaite gagner du temps sur la correction de 40 dissertations. Quelle utilisation de l'IA générative optimise son temps <strong>tout en maximisant l'impact pédagogique</strong> ?
+                            Un enseignant souhaite gagner du temps sur la correction de 40 dissertations. Quelle utilisation de l'IA optimise son temps tout en maximisant l'impact pédagogique ?
                         </div>
                     </div>
-
                     <div class="qcm-options" id="qcm-options-1">
                         <label>
                             <input type="radio" name="qcm1" value="A">
-                            <span data-letter="A">Demander à l'IA de noter directement les copies et de fournir la moyenne de la classe.</span>
+                            <span data-letter="A">Demander à l'IA de noter directement les copies et fournir la moyenne.</span>
                         </label>
                         <label>
                             <input type="radio" name="qcm1" value="B">
-                            <span data-letter="B">Utiliser l'IA pour générer 5 exemples de pistes d'amélioration basées sur le barème et les appliquer manuellement.</span>
+                            <span data-letter="B">Utiliser l'IA pour générer des pistes d'amélioration basées sur le barème.</span>
                         </label>
                         <label>
                             <input type="radio" name="qcm1" value="C">
-                            <span data-letter="C">Demander à l'IA d'analyser les 40 copies anonymes pour identifier les 3 erreurs récurrentes majeures, puis créer une séance de remédiation en classe.</span>
+                            <span data-letter="C">Analyser les copies pour identifier les erreurs récurrentes et créer une séance de remédiation.</span>
                         </label>
                         <label>
                             <input type="radio" name="qcm1" value="D">
-                            <span data-letter="D">Saisir une copie par une IA et simplement recopier son commentaire détaillé à l'élève concerné.</span>
+                            <span data-letter="D">Recopier les commentaires de l'IA sans adaptation.</span>
                         </label>
                     </div>
-
                     <button class="validate-btn" onclick="submitQCM(1)">Valider ma réponse</button>
                     <div class="feedback-area" id="feedback-1"></div>
                 </div>
 
-                <!-- CAS 2 -->
+                <!-- Cas 2 -->
                 <div class="case-study">
                     <div class="case-scenario">
                         <strong>🌍 Cas 2 : Soutien aux élèves allophones</strong>
                         <div class="qcm-question">
-                            Vous donnez un texte source complexe en histoire. Pour soutenir vos élèves allophones (FLE), quelle est la meilleure approche d'enrichissement par l'IA</strong> ?
+                            Pour soutenir vos élèves allophones (FLE) avec un texte complexe en histoire, quelle est la meilleure approche ?
                         </div>
                     </div>
-
                     <div class="qcm-options" id="qcm-options-2">
                         <label>
                             <input type="radio" name="qcm2" value="A">
-                            <span data-letter="A">Simplement traduire le texte intégralement dans leur langue maternelle via l'IA.</span>
+                            <span data-letter="A">Traduire intégralement le texte dans leur langue maternelle.</span>
                         </label>
                         <label>
                             <input type="radio" name="qcm2" value="B">
-                            <span data-letter="B">Demander à l'IA de simplifier le texte en utilisant uniquement 500 mots du français fondamental et d'ajouter un glossaire.</span>
+                            <span data-letter="B">Simplifier le texte en français fondamental et ajouter un glossaire.</span>
                         </label>
                         <label>
                             <input type="radio" name="qcm2" value="C">
-                            <span data-letter="C">Interdire l'usage de l'IA pour garantir qu'ils travaillent uniquement avec la version originale du texte.</span>
+                            <span data-letter="C">Interdire l'usage de l'IA pour travailler avec la version originale.</span>
                         </label>
                         <label>
                             <input type="radio" name="qcm2" value="D">
-                            <span data-letter="D">Demander à l'IA de créer un QCM de compréhension standard sur le texte original.</span>
+                            <span data-letter="D">Créer un QCM standard sur le texte original.</span>
                         </label>
                     </div>
-
                     <button class="validate-btn" onclick="submitQCM(2)">Valider ma réponse</button>
                     <div class="feedback-area" id="feedback-2"></div>
                 </div>
 
-                <!-- CAS 3 -->
+                <!-- Cas 3 -->
                 <div class="case-study">
                     <div class="case-scenario">
-                        <strong>🧠 Cas 3 : Travail sur la production d'idées</strong>
+                        <strong>🧠 Cas 3 : Production d'idées</strong>
                         <div class="qcm-question">
-                            Dans un cours de français, vous demandez aux élèves d'utiliser l'IA générative pour rédiger le plan d'une rédaction sur "<em>Le travail est-il une contrainte ou une libération ?</em>". <strong>Quel objectif pédagogique est visé par cette démarche ?</strong>
+                            En français, vous demandez aux élèves d'utiliser l'IA pour rédiger un plan sur "Le travail est-il une contrainte ou une libération ?". Quel est l'objectif pédagogique ?
                         </div>
                     </div>
-
                     <div class="qcm-options" id="qcm-options-3">
                         <label>
                             <input type="radio" name="qcm3" value="A">
-                            <span data-letter="A">Tester leur capacité à recopier fidèlement le plan généré et à le développer.</span>
+                            <span data-letter="A">Tester leur capacité à recopier fidèlement le plan.</span>
                         </label>
                         <label>
                             <input type="radio" name="qcm3" value="B">
-                            <span data-letter="B">Évaluer leur capacité à critiquer, améliorer et personnaliser le plan de l'IA pour l'adapter à leur propre argumentation et à leurs connaissances.</span>
+                            <span data-letter="B">Évaluer leur capacité à critiquer et personnaliser le plan.</span>
                         </label>
                         <label>
                             <input type="radio" name="qcm3" value="C">
-                            <span data-letter="C">Accélérer le processus pour qu'ils aient plus de temps pour la rédaction pure.</span>
+                            <span data-letter="C">Accélérer le processus de rédaction.</span>
                         </label>
                         <label>
                             <input type="radio" name="qcm3" value="D">
-                            <span data-letter="D">Les familiariser avec un outil technologique sans objectif d'apprentissage spécifique.</span>
+                            <span data-letter="D">Les familiariser avec un outil technologique.</span>
                         </label>
                     </div>
-
                     <button class="validate-btn" onclick="submitQCM(3)">Valider ma réponse</button>
                     <div class="feedback-area" id="feedback-3"></div>
                 </div>
@@ -850,13 +954,14 @@ il ne dépend pas uniquement de la manipulation d’outils, mais aussi de la ré
             <button class="action-btn" onclick="goToSection(4)">Passer à l'activité Plus-value ➡️</button>
         </div>
 
-        <!-- PARTIE 4 : PLUS-VALUE PÉDAGOGIQUE (inchangée) -->
+        <!-- PARTIE 4 : PLUS-VALUE PÉDAGOGIQUE -->
         <div class="section" id="section4">
             <h2>Partie 4 : Plus-value pédagogique et usages</h2>
             <div class="instruction">
-                <strong>Objectif :</strong> Réfléchir à la manière dont l'intelligence artificielle peut réellement enrichir les pratiques. Distinguez les usages qui apportent une véritable plus-value de ceux qui sont à nuancer.
+                <strong>Objectif :</strong> Distinguez les usages qui apportent une véritable plus-value de ceux qui sont à nuancer.
             </div>
-            <div id="carte" class="carte">
+
+            <div class="carte">
                 <h3 id="question-plusvalue">Cliquez sur le bouton ci-dessous pour commencer</h3>
                 <div class="boutons" id="choix" style="display:none;">
                     <button class="btn-oui" onclick="repondre('oui')">✅ Plus-value</button>
@@ -865,32 +970,40 @@ il ne dépend pas uniquement de la manipulation d’outils, mais aussi de la ré
                 </div>
                 <div id="feedback-plusvalue" class="feedback"></div>
             </div>
+
             <button id="suivant-plusvalue" class="action-btn" onclick="suivantPlusValue()">▶️ Commencer</button>
             <div id="score-plusvalue">Score : 0 / 10</div>
             <div id="fin-plusvalue" style="display:none;"></div>
-            <button class="action-btn" onclick="goToSection(5)" style="margin-top: 40px;">Synthèse et bilan final 📝</button>
+
+            <button class="action-btn" onclick="goToSection(5)">Synthèse et bilan final 📝</button>
         </div>
 
-        <!-- PARTIE 5 : SYNTHÈSE (inchangée) -->
+        <!-- PARTIE 5 : SYNTHÈSE -->
         <div class="section" id="section5">
             <h2>Partie 5 : Feuille de Route pour l'Intégration</h2>
             <div class="instruction">
                 <strong>Objectif :</strong> Récapituler les étapes pour passer d'une posture de méfiance à une posture de maîtrise.
             </div>
-            <div class="synthesis-section" style="padding: 25px; border-radius: 15px; background: rgba(27, 133, 90, 0.1); border-left: 5px solid var(--primary);">
-                <h3 style="color: var(--primary); font-size: 1.5em; margin-bottom: 20px; text-align: center;">De l'outil au partenaire : Intégrer l'IA avec vision</h3>
+
+            <div style="padding: 25px; border-radius: 15px; background: rgba(27, 133, 90, 0.1); border-left: 5px solid var(--primary);">
+                <h3 style="color: var(--primary); font-size: 1.5em; margin-bottom: 20px; text-align: center;">
+                    De l'outil au partenaire : Intégrer l'IA avec vision
+                </h3>
+
                 <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
                     <div style="background: white; padding: 15px; border-radius: 10px; border-left: 4px solid var(--accent-blue);">
                         <h4 style="font-weight: 700; color: var(--accent-blue); margin-bottom: 5px;">Étape 1 : Posture Humaine</h4>
-                        <p>L'IA est un assistant, jamais un substitut. Elle vous libère des tâches répétitives pour vous permettre de renforcer l'accompagnement et la relation pédagogique.</p>
+                        <p>L'IA est un assistant, jamais un substitut. Elle libère du temps pour renforcer l'accompagnement.</p>
                     </div>
+
                     <div style="background: white; padding: 15px; border-radius: 10px; border-left: 4px solid var(--accent-orange);">
                         <h4 style="font-weight: 700; color: var(--accent-orange); margin-bottom: 5px;">Étape 2 : Maîtrise Technique</h4>
-                        <p>Investir du temps dans l'apprentissage du prompting avancé est crucial. Un bon prompt = une valeur ajoutée pédagogique maximale.</p>
+                        <p>Investir du temps dans l'apprentissage du prompting avancé pour maximiser la valeur ajoutée.</p>
                     </div>
+
                     <div style="background: white; padding: 15px; border-radius: 10px; border-left: 4px solid var(--primary-light);">
                         <h4 style="font-weight: 700; color: var(--primary-light); margin-bottom: 5px;">Étape 3 : Objectif Critique</h4>
-                        <p>Intégrer l'IA non seulement pour créer du contenu, mais aussi pour développer la métacognition et l'esprit critique de l'élève face à l'information.</p>
+                        <p>Intégrer l'IA pour développer la métacognition et l'esprit critique face à l'information.</p>
                     </div>
                 </div>
             </div>
@@ -898,489 +1011,367 @@ il ne dépend pas uniquement de la manipulation d’outils, mais aussi de la ré
     </div>
 
     <script>
-        // --- LOGIQUE DE NAVIGATION ---
+        // ========== LOGIQUE GÉNÉRALE ==========
         function goToSection(sectionNumber) {
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
             });
-            const targetSection = document.getElementById('section' + sectionNumber);
-            if (targetSection) {
-                targetSection.classList.add('active');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            document.getElementById('section' + sectionNumber).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function toggleStep(element) {
             element.classList.toggle('active');
         }
 
-        // --- LOGIQUE PARTIE 1 (inchangée) ---
-        const SECURITY_REMINDER = " <span style='font-weight:700; color:var(--red-trap);'> (Rappel Sécurité/RGPD : Toujours vérifier les conditions d'utilisation et éviter les données personnelles dans ces outils grand public.)</span>";
-        const correctAssociations1to1 = {
-            qcm: {
-                tool: 'quizwizard',
-                precaution: 'verif_fact_pertinence',
-                rationale: {
-                    tool: 'Quiz Wizard est spécialisé dans la création de QCMs directement exportables (LMS, Moodle, etc.), ce qui est son usage principal.' + SECURITY_REMINDER,
-                    precaution: 'La vérification de la pertinence et de l\'exactitude des questions est cruciale pour que l\'outil d\'évaluation soit valide.'
-                }
-            },
-            questions: {
-                tool: 'chatgpt_gemini_mistral',
-                precaution: 'renseignement_contexte',
-                rationale: {
-                    tool: 'Les LLMs généralistes (GPT, Gemini...) sont les meilleurs pour la génération rapide de contenu à partir d\'un prompt simple, idéal pour des questions d\'évaluation immédiates.' + SECURITY_REMINDER,
-                    precaution: 'Sans indiquer le niveau, la durée et les compétences visées, les questions générées seront trop génériques ou inadaptées au public cible.'
-                }
-            },
-            versions: {
-                tool: 'chatgpt_gemini_mistral',
-                precaution: 'intention_pedagogique',
-                rationale: {
-                    tool: 'Les LLMs généralistes sont excellents pour paraphraser et réécrire des textes selon des contraintes spécifiques (ex: 3 versions de difficulté différente).' + SECURITY_REMINDER,
-                    precaution: 'S\'assurer de l\'équilibrage des difficultés et de l\'alignement avec le programme est essentiel pour que l\'exercice reste équitable et pertinent.'
-                }
-            },
-            bilan: {
-                tool: 'chatgpt_gemini_mistral',
-                precaution: 'verif_fact_esprit_critique',
-                rationale: {
-                    tool: 'Les LLMs généralistes peuvent synthétiser de larges corpus et fournir des explications détaillées, parfait pour un bilan de révision.' + SECURITY_REMINDER,
-                    precaution: 'Il faut vérifier les faits et développer l\'esprit critique des élèves, notamment en sciences/histoire, pour éviter qu\'ils ne considèrent le contenu IA comme parole d\'évangile.'
-                }
-            },
-            adapter: {
-                tool: 'claude',
-                precaution: 'intention_pedagogique_ton',
-                rationale: {
-                    tool: 'Claude (Anthropic) est souvent considéré comme plus performant dans la gestion de la longueur et du ton, idéal pour les exercices stylistiques ou les adaptations didactiques.' + SECURITY_REMINDER,
-                    precaution: 'Le changement de style doit servir un objectif pédagogique clair et la vérification factuelle reste indispensable, quel que soit le ton.'
-                }
-            },
-            presentation: {
-                tool: 'gamma',
-                precaution: 'intention_pedagogique_surcharge',
-                rationale: {
-                    tool: 'Gamma est spécifiquement conçu pour générer des présentations (slides) de manière semi-automatique à partir de texte.' + SECURITY_REMINDER,
-                    precaution: 'Le risque d\'un outil de présentation est la surcharge cognitive (trop de texte, trop d\'images) qui nuit à l\'apprentissage. La modération est clé.'
-                }
-            },
-            resume: {
-                tool: 'notebooklm',
-                precaution: 'verif_confidentialite',
-                rationale: {
-                    tool: 'NotebookLM est conçu pour analyser de grands documents PDF (sources) et en tirer des synthèses, y compris audio/vidéo (beta), tout en protégeant les données.' + SECURITY_REMINDER,
-                    precaution: 'Lors de l\'analyse de documents longs (surtout internes), la confidentialité et le RGPD sont primordiaux. Il faut s\'assurer qu\'aucun document sensible ne soit transmis.'
-                }
-            },
-            commentaires: {
-                tool: 'chatgpt_gemini_mistral',
-                precaution: 'confidentialite_feedback',
-                rationale: {
-                    tool: 'Les LLMs généralistes sont très efficaces pour générer des variations de texte (commentaires) à partir de notes, en assurant un ton cohérent.' + SECURITY_REMINDER,
-                    precaution: 'Il est essentiel de respecter le RGPD/Confidentialité (pas de noms d\'élèves) et de veiller à ce que le feedback généré soit constructif et bienveillant.'
-                }
-            },
-            feedbacks: {
-                tool: 'chatgpt_gemini_mistral',
-                precaution: 'confidentialite_feedback',
-                rationale: {
-                    tool: 'Même raison que pour les commentaires: les LLMs généralistes sont parfaits pour la génération de texte varié et personnalisé basé sur des critères.' + SECURITY_REMINDER,
-                    precaution: 'Le RGPD/Confidentialité (pas de noms d\'élèves) et la qualité (constructif et bienveillant) du feedback sont les précautions les plus critiques ici.'
-                }
-            },
-            progression: {
-                tool: 'chatgpt_gemini_mistral',
-                precaution: 'intention_pedagogique',
-                rationale: {
-                    tool: 'Les LLMs généralistes peuvent créer des plans structurés (séquences) en se basant sur des programmes officiels et des objectifs d\'apprentissage.' + SECURITY_REMINDER,
-                    precaution: 'Toute planification doit veiller à l\'équilibrage des difficultés des séquences et à l\'alignement avec le programme officiel pour garantir la qualité de l\'enseignement.'
-                }
-            },
-            recherche: {
-                tool: 'perplexity',
-                precaution: 'verif_croiser_sources',
-                rationale: {
-                    tool: 'Perplexity est un moteur de recherche conversationnel qui cite ses sources, ce qui est essentiel pour la documentation factuelle.' + SECURITY_REMINDER,
-                    precaution: 'Le risque d\'une recherche unique est le biais ou l\'hallucination. Il faut croiser les sources et développer l\'esprit critique des élèves.'
-                }
-            },
-            enigmes: {
-                tool: 'claude',
-                precaution: 'intention_biais',
-                rationale: {
-                    tool: 'Claude, souvent loué pour ses capacités narratives et sa créativité, est un excellent choix pour générer des scénarios d\'énigmes ou d\'Escape Games engageants.' + SECURITY_REMINDER,
-                    precaution: 'Les énigmes et jeux exigent un objectif d\'apprentissage clair et doivent être purgés de tout biais culturel ou stéréotype involontairement intégré par l\'IA.'
-                }
-            },
-            fiche: {
-                tool: 'canva',
-                precaution: 'verif_fact_seule',
-                rationale: {
-                    tool: 'Canva, grâce à son assistant IA (Magic Design, Magic Edit, etc.), est l\'outil le plus adapté pour créer rapidement un support visuel (fiche) de qualité avec des images.' + SECURITY_REMINDER,
-                    precaution: 'Dans une fiche de cours (support d\'autorité), la vérification factuelle seule est primordiale car les élèves ne remettront pas en cause le contenu du document.'
-                }
-            },
-            pages_web: {
-                tool: 'claude',
-                precaution: 'verif_fact_seule',
-                rationale: {
-                    tool: 'Claude excelle dans la structuration et la génération de code (HTML/CSS), idéal pour la création rapide de pages web pédagogiques.' + SECURITY_REMINDER,
-                    precaution: 'Comme pour la fiche, la page web est un support de référence : la vérification factuelle pour l\'exactitude des données est l\'unique précaution la plus essentielle.'
-                }
-            },
-            recherche_progression: {
-                tool: 'claude',
-                precaution: 'verif_fact_seule',
-                rationale: {
-                    tool: 'Pour construire un nouveau cours (souvent basé sur un grand nombre de ressources et d\'objectifs), Claude est privilégié pour sa capacité à gérer de longues conversations et tâches complexes.' + SECURITY_REMINDER,
-                    precaution: 'Comme le contenu du cours est nouveau, la vérification factuelle pour l\'exactitude des données est l\'unique précaution la plus essentielle.'
-                }
-            }
+        // ========== PARTIE 1 : JEU D'ASSOCIATION ==========
+        const correctAssociations = {
+            qcm: { tool: 'quizwizard', precaution: 'verif_fact_pertinence' },
+            questions: { tool: 'chatgpt', precaution: 'renseignement_contexte' },
+            versions: { tool: 'chatgpt', precaution: 'intention_pedagogique' },
+            bilan: { tool: 'chatgpt', precaution: 'verif_fact_esprit_critique' },
+            adapter: { tool: 'chatgpt', precaution: 'intention_pedagogique_ton' },
+            presentation: { tool: 'gamma', precaution: 'intention_pedagogique_surcharge' },
+            resume: { tool: 'notebooklm', precaution: 'verif_confidentialite' },
+            commentaires: { tool: 'chatgpt', precaution: 'confidentialite_feedback' },
+            feedbacks: { tool: 'chatgpt', precaution: 'confidentialite_feedback' },
+            progression: { tool: 'chatgpt', precaution: 'intention_pedagogique' },
+            recherche: { tool: 'perplexity', precaution: 'verif_fact_esprit_critique' },
+            enigmes: { tool: 'chatgpt', precaution: 'intention_biais' }
         };
+
+        const rationaleMessages = {
+            quizwizard: "Quiz Wizard est spécialisé dans la création de QCMs exportables (LMS, Moodle).",
+            chatgpt: "Les LLMs généralistes (ChatGPT, Gemini) sont polyvalents pour la génération de contenu pédagogique.",
+            perplexity: "Perplexity est idéal pour les recherches documentées avec sources citées.",
+            gamma: "Gamma permet de créer rapidement des présentations visuelles de qualité.",
+            notebooklm: "NotebookLM excelle dans l'analyse de documents PDF pour en extraire des synthèses.",
+            canva: "Canva est parfait pour créer des supports visuels avec images et designs professionnels."
+        };
+
         let selectedTask = null;
-        let droppedToolId = null;
-        let droppedPrecautionId = null;
+        let currentTool = null;
+        let currentPrecaution = null;
         let completedTasks = new Set();
-        const totalTasks = Object.keys(correctAssociations1to1).length;
-        const taskList = document.getElementById('taskList');
-        const toolSlot = document.getElementById('toolSlot');
-        const precautionSlot = document.getElementById('precautionSlot');
-        const btnValidate = document.getElementById('btnValidate');
-        const btnReset = document.getElementById('btnReset');
-        const progressBar = document.getElementById('progressBar');
-        const customModal = document.getElementById('customModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const modalMessage = document.getElementById('modalMessage');
-        const btnCloseModal = document.getElementById('btnCloseModal');
+
+        // Initialisation
+        function initPart1() {
+            // Sélection des tâches
+            document.querySelectorAll('.card.task').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.card.task').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    selectedTask = card.dataset.id;
+                    updateValidationButton();
+                });
+            });
+
+            // Glisser-déposer pour outils et précautions
+            document.querySelectorAll('.card.tool, .card.precaution').forEach(card => {
+                card.addEventListener('dragstart', (e) => {
+                    if (!selectedTask) {
+                        showModal("Erreur", "Veuillez d'abord sélectionner une tâche");
+                        e.preventDefault();
+                        return;
+                    }
+                    e.dataTransfer.setData('text/plain', card.dataset.id);
+                    e.dataTransfer.setData('type', card.classList.contains('tool') ? 'tool' : 'precaution');
+                });
+            });
+
+            // Zones de dépôt
+            document.getElementById('toolSlot').addEventListener('dragover', allowDrop);
+            document.getElementById('toolSlot').addEventListener('drop', (e) => handleDrop(e, 'tool'));
+            document.getElementById('precautionSlot').addEventListener('dragover', allowDrop);
+            document.getElementById('precautionSlot').addEventListener('drop', (e) => handleDrop(e, 'precaution'));
+
+            // Boutons
+            document.getElementById('btnValidate').addEventListener('click', validateAssociation);
+            document.getElementById('btnReset').addEventListener('click', resetGame);
+            document.getElementById('btnCloseModal').addEventListener('click', closeModal);
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDrop(e, type) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+
+            const id = e.dataTransfer.getData('text/plain');
+            const dropType = e.dataTransfer.getData('type');
+
+            if (dropType !== type) return;
+
+            const slot = e.currentTarget;
+            const originalCard = document.querySelector(`.card[data-id="${id}"]`);
+
+            // Retirer l'élément précédent si présent
+            if (slot.querySelector('.dropped-card')) {
+                const previousId = slot.querySelector('.dropped-card').dataset.id;
+                document.querySelector(`.card[data-id="${previousId}"]`).classList.remove('hidden');
+            }
+
+            // Ajouter le nouvel élément
+            slot.innerHTML = '';
+            const clone = originalCard.cloneNode(true);
+            clone.classList.add('dropped-card');
+            clone.draggable = false;
+            slot.appendChild(clone);
+            slot.classList.add('filled');
+
+            // Masquer la carte originale et mettre à jour les variables
+            originalCard.classList.add('hidden');
+            if (type === 'tool') currentTool = id;
+            else currentPrecaution = id;
+
+            updateValidationButton();
+        }
+
+        function updateValidationButton() {
+            document.getElementById('btnValidate').disabled = !(selectedTask && currentTool && currentPrecaution);
+        }
+
+        function validateAssociation() {
+            const correct = correctAssociations[selectedTask];
+            const isCorrect = currentTool === correct.tool && currentPrecaution === correct.precaution;
+
+            if (isCorrect) {
+                completedTasks.add(selectedTask);
+                document.querySelector(`.card.task[data-id="${selectedTask}"]`).classList.add('completed');
+                updateProgress();
+                showModal("Succès", generateSuccessMessage(selectedTask), true);
+                resetSelection();
+            } else {
+                let message = "Association incorrecte.<br><br>";
+                if (currentTool !== correct.tool) {
+                    message += `❌ Outil: devrait être ${getCardName(correct.tool, 'tool')}<br>`;
+                }
+                if (currentPrecaution !== correct.precaution) {
+                    message += `❌ Précaution: devrait être ${getCardName(correct.precaution, 'precaution')}`;
+                }
+                showModal("Erreur", message);
+            }
+        }
+
+        function generateSuccessMessage(taskId) {
+            const correct = correctAssociations[taskId];
+            return `
+                <h3>Association correcte !</h3>
+                <p><strong>🤖 Outil:</strong> ${rationaleMessages[correct.tool] || "Outil adapté à cette tâche."}</p>
+                <p><strong>⚠️ Précaution:</strong> ${getPrecautionRationale(correct.precaution)}</p>
+            `;
+        }
+
+        function getPrecautionRationale(precautionId) {
+            const messages = {
+                'verif_fact_pertinence': "Vérifiez la pertinence et l'exactitude pour un outil d'évaluation valide.",
+                'renseignement_contexte': "Indiquez niveau, durée et compétences visées pour des questions adaptées.",
+                'intention_pedagogique': "Équilibrez la difficulté et alignez avec le programme officiel.",
+                'verif_fact_esprit_critique': "Développez l'esprit critique, surtout en sciences/histoire.",
+                'intention_pedagogique_ton': "Le ton doit servir l'apprentissage avec vérification factuelle.",
+                'intention_pedagogique_surcharge': "Évitez la surcharge cognitive (trop d'infos/visuels).",
+                'verif_confidentialite': "Respectez le RGPD: pas de données sensibles.",
+                'confidentialite_feedback': "Feedback constructif sans noms d'élèves.",
+                'intention_biais': "Objectif clair et identification des biais culturels."
+            };
+            return messages[precautionId] || "Précaution importante pour cette tâche.";
+        }
+
+        function getCardName(id, type) {
+            const prefix = type === 'tool' ? '🤖 ' : '⚠️ ';
+            const element = document.querySelector(`.card[data-id="${id}"] .card-title`);
+            return prefix + (element ? element.textContent : id);
+        }
+
+        function resetSelection() {
+            selectedTask = null;
+            currentTool = null;
+            currentPrecaution = null;
+            document.querySelectorAll('.card.task').forEach(card => card.classList.remove('selected'));
+            document.getElementById('btnValidate').disabled = true;
+        }
+
+        function resetGame() {
+            resetSelection();
+            completedTasks.clear();
+            document.querySelectorAll('.card.task').forEach(card => card.classList.remove('completed'));
+            document.querySelectorAll('.drop-slot').forEach(slot => {
+                slot.innerHTML = slot.id === 'toolSlot'
+                    ? '<span class="slot-label">Déposez l\'Outil ici</span>'
+                    : '<span class="slot-label">Déposez la Précaution ici</span>';
+                slot.classList.remove('filled');
+            });
+            document.querySelectorAll('.card.hidden').forEach(card => card.classList.remove('hidden'));
+            updateProgress();
+        }
 
         function updateProgress() {
-            const percentage = (completedTasks.size / totalTasks) * 100;
-            progressBar.style.width = `${percentage}%`;
-            if (completedTasks.size === totalTasks) {
-                showModal('🎉 Félicitations !', 'Vous avez réussi à associer correctement toutes les tâches, outils et précautions. Vous êtes prêt(e) à intégrer l\'IA dans votre pédagogie !', true);
+            const progress = (completedTasks.size / Object.keys(correctAssociations).length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+
+            if (completedTasks.size === Object.keys(correctAssociations).length) {
+                showModal("Félicitations", "Vous avez complété toutes les associations avec succès !", true);
             }
         }
 
         function showModal(title, message, isSuccess = false) {
-            modalTitle.textContent = title;
-            modalMessage.innerHTML = message;
-            modalTitle.style.color = isSuccess ? 'var(--green-1)' : 'var(--red-trap)';
-            btnCloseModal.className = isSuccess ? 'btn btn-validate' : 'btn btn-reset';
-            customModal.classList.add('show');
-            document.getElementById('modalBox').focus();
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').innerHTML = message;
+            document.getElementById('modalTitle').style.color = isSuccess ? 'var(--green-1)' : 'var(--red-trap)';
+            document.getElementById('customModal').classList.add('show');
         }
 
         function closeModal() {
-            customModal.classList.remove('show');
+            document.getElementById('customModal').classList.remove('show');
         }
 
-        function resetGame() {
-            completedTasks.clear();
-            selectedTask = null;
-            updateProgress();
-            resetDropZones();
-            document.querySelectorAll('.card.task').forEach(card => {
-                card.classList.remove('completed', 'selected');
-            });
-            document.querySelectorAll('.card.hidden').forEach(card => card.classList.remove('hidden'));
-            document.getElementById('toolSourceList').append(...document.querySelectorAll('.card.tool'));
-            document.getElementById('precautionSourceList').append(...document.querySelectorAll('.card.precaution'));
-            showModal('Jeu Réinitialisé', 'L\'activité a été réinitialisée. Reprenez depuis le début !', false);
-        }
-
-        function resetDropZones() {
-            toolSlot.innerHTML = `<span class="slot-label">Déposez l'Outil ici</span>`;
-            toolSlot.classList.remove('filled');
-            toolSlot.removeAttribute('data-id');
-            droppedToolId = null;
-            precautionSlot.innerHTML = `<span class="slot-label">Déposez la Précautions ici</span>`;
-            precautionSlot.classList.remove('filled');
-            precautionSlot.removeAttribute('data-id');
-            droppedPrecautionId = null;
-            document.querySelectorAll('.card.hidden').forEach(card => card.classList.remove('hidden'));
-            btnValidate.disabled = true;
-        }
-
-        function updateValidationButton() {
-            btnValidate.disabled = !(selectedTask && droppedToolId && droppedPrecautionId);
-        }
-
-        function placeCardInSlot(slotElement, cardElement) {
-            slotElement.innerHTML = '';
-            const clone = cardElement.cloneNode(true);
-            clone.classList.remove('dragging', 'hidden');
-            clone.classList.add('dropped-card');
-            clone.draggable = false;
-            slotElement.appendChild(clone);
-            slotElement.classList.add('filled');
-            slotElement.setAttribute('data-id', cardElement.dataset.id);
-            const type = slotElement.dataset.type;
-            if (type === 'tool') {
-                droppedToolId = cardElement.dataset.id;
-            } else if (type === 'precaution') {
-                droppedPrecautionId = cardElement.dataset.id;
-            }
-            cardElement.classList.add('hidden');
-            updateValidationButton();
-        }
-
-        function drag(event) {
-            if (!selectedTask) {
-                event.preventDefault();
-                showModal('Sélection requise', 'Veuillez d\'abord sélectionner une Tâche dans la liste (cliquez dessus) avant de glisser-déposer un outil ou une précaution.');
-                return;
-            }
-            event.dataTransfer.setData("text/plain", event.target.dataset.id);
-            event.dataTransfer.setData("text/type", event.target.dataset.type);
-            event.target.classList.add('dragging');
-        }
-
-        window.drag = drag;
-
-        function allowDrop(event) {
-            event.preventDefault();
-        }
-
-        window.allowDrop = allowDrop;
-
-        function dragEnter(event) {
-            event.preventDefault();
-            const target = event.target.closest('.drop-slot');
-            if (target) {
-                 const droppedType = event.dataTransfer.getData("text/type");
-                 if (target.dataset.type === droppedType) {
-                    target.classList.add('drag-over');
-                 }
-            }
-        }
-
-        window.dragEnter = dragEnter;
-
-        function dragLeave(event) {
-            const target = event.target.closest('.drop-slot');
-            if (target) {
-                target.classList.remove('drag-over');
-            }
-        }
-
-        window.dragLeave = dragLeave;
-
-        function drop(event) {
-            event.preventDefault();
-            const droppedId = event.dataTransfer.getData("text/plain");
-            const droppedType = event.dataTransfer.getData("text/type");
-            const dropTarget = event.target.closest('.drop-slot');
-            const sourceCard = document.querySelector(`.card[data-id="${droppedId}"][data-type="${droppedType}"]`);
-            if (!dropTarget || dropTarget.dataset.type !== droppedType || !sourceCard) {
-                showModal('Erreur de dépôt', 'Veuillez déposer l\'élément dans la zone de dépôt correspondante (Outil dans Outil, Précaution dans Précaution).');
-                if (sourceCard) sourceCard.classList.remove('dragging');
-                if (dropTarget) dropTarget.classList.remove('drag-over');
-                return;
-            }
-            if (dropTarget.classList.contains('filled')) {
-                const oldCardId = dropTarget.getAttribute('data-id');
-                const oldCard = document.querySelector(`.card[data-id="${oldCardId}"][data-type="${droppedType}"]`);
-                if (oldCard) {
-                    oldCard.classList.remove('hidden');
-                }
-            }
-            placeCardInSlot(dropTarget, sourceCard);
-            sourceCard.classList.remove('dragging');
-            dropTarget.classList.remove('drag-over');
-        }
-
-        window.drop = drop;
-
-        function selectTask(taskElement) {
-            if (taskElement.classList.contains('completed')) return;
-            document.querySelectorAll('.card.task.selected').forEach(card => card.classList.remove('selected'));
-            taskElement.classList.add('selected');
-            selectedTask = taskElement.dataset.id;
-            resetDropZones();
-        }
-
-        function validateAssociation() {
-            if (!selectedTask || !droppedToolId || !droppedPrecautionId) {
-                showModal('Erreur', 'Veuillez sélectionner une Tâche et déposer un Outil et une Précautions.');
-                return;
-            }
-            const correct = correctAssociations1to1[selectedTask];
-            const isToolCorrect = droppedToolId === correct.tool;
-            const isPrecautionCorrect = droppedPrecautionId === correct.precaution;
-            let feedbackTitle = '';
-            let feedbackMessage = '<h3>Association incorrecte ! Voici les éléments à revoir :</h3>';
-            if (isToolCorrect && isPrecautionCorrect) {
-                feedbackTitle = '✅ Association Correcte !';
-                feedbackMessage = `
-                    <h3>Tâche réussie !</h3>
-                    <p style="margin-top:10px;"><strong>🤖 Outil :</strong> ${correct.rationale.tool}</p>
-                    <p style="margin-top:10px;"><strong>⚠️ Précautions :</strong> ${correct.rationale.precaution}</p>
-                `;
-                completedTasks.add(selectedTask);
-                document.querySelector(`.card.task[data-id="${selectedTask}"]`).classList.add('completed');
-                document.querySelectorAll('.card.task.selected').forEach(card => card.classList.remove('selected'));
-            } else {
-                feedbackTitle = '❌ Erreur d\'Association';
-                if (!isToolCorrect) {
-                    const expectedTool = document.querySelector(`.card.tool[data-id="${correct.tool}"] .card-title`).textContent;
-                    feedbackMessage += `<p style="margin-top:10px;"><strong>🤖 Outil :</strong> L'outil sélectionné est incorrect. L'outil le plus adapté est **${expectedTool}**. <br/>*Raison :* ${correct.rationale.tool}</p>`;
-                } else {
-                    feedbackMessage += `<p style="margin-top:10px; color:var(--success-color);"><strong>✅ Outil :</strong> Outil correct (${document.querySelector(`.card.tool[data-id="\${droppedToolId}"] .card-title`).textContent}).</p>`;
-                }
-                if (!isPrecautionCorrect) {
-                    const expectedPrecaution = document.querySelector(`.card.precaution[data-id="${correct.precaution}"] .card-title`).textContent;
-                    feedbackMessage += `<p style="margin-top:10px;"><strong>⚠️ Précautions :</strong> La précaution sélectionnée est incorrecte. La précaution essentielle est **${expectedPrecaution}**. <br/>*Raison :* ${correct.rationale.precaution}</p>`;
-                } else {
-                    feedbackMessage += `<p style="margin-top:10px; color:var(--success-color);"><strong>✅ Précautions :</strong> Précaution correcte (${document.querySelector(`.card.precaution[data-id="\${droppedPrecautionId}"] .card-title`).textContent}).</p>`;
-                }
-            }
-            showModal(feedbackTitle, feedbackMessage, isToolCorrect && isPrecautionCorrect);
-            resetDropZones();
-            updateProgress();
-        }
-
-        function initEventListeners() {
-            document.querySelectorAll('.card.task').forEach(task => {
-                task.addEventListener('click', () => selectTask(task));
-                task.addEventListener('keyup', (event) => {
-                    if (event.key === 'Enter' || event.key === ' ') {
-                        selectTask(task);
-                    }
-                });
-            });
-            btnValidate.addEventListener('click', validateAssociation);
-            btnReset.addEventListener('click', resetGame);
-            btnCloseModal.addEventListener('click', closeModal);
-            customModal.addEventListener('click', (e) => {
-                if (e.target === customModal) {
-                    closeModal();
-                }
-            });
-            window.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && customModal.classList.contains('show')) {
-                    closeModal();
-                }
-            });
-            document.querySelectorAll('.card[draggable="true"]').forEach(card => {
-                card.addEventListener('dragend', (event) => {
-                    event.target.classList.remove('dragging');
-                    document.querySelectorAll('.drop-slot').forEach(slot => slot.classList.remove('drag-over'));
-                });
-            });
-        }
-
-        // --- LOGIQUE PARTIE 3 : QCM (inchangée) ---
+        // ========== PARTIE 3 : QCM ==========
         const QCM_ANSWERS = {
-            1: {
-                correct: 'C',
-                explanation: 'La meilleure approche est de transformer le travail d\'évaluation pour en tirer un bénéfice collectif (C). L\'enseignant utilise l\'IA pour identifier les tendances et se recentre sur l'intervention humaine lors de la remédiation en classe, maximisant l\'impact pour tous.'
-            },
-            2: {
-                correct: 'B',
-                explanation: 'L\'enrichissement passe par l'accessibilité et la différenciation. Simplifier le texte en français fondamental (B) maintient l\'élève dans la langue cible tout en réduisant la charge cognitive. Traduire (A) isole l\'élève du processus d\'apprentissage du français.'
-            },
-            3: {
-                correct: 'B',
-                explanation: 'Le but est d\'utiliser l\'IA comme un stimulateur de pensée. L\'élève doit critiquer et personnaliser la production de l\'IA. Cela développe l\'esprit critique et la métacognition, en faisant passer l\'élève de consommateur à maître de l\'outil (B).'
-            }
+            1: { correct: 'C', explanation: "L'IA permet d'identifier les tendances pour une remédiation collective, maximisant l'impact pédagogique." },
+            2: { correct: 'B', explanation: "Simplifier en français fondamental maintient l'apprentissage de la langue tout en réduisant la charge cognitive." },
+            3: { correct: 'B', explanation: "Critiquer et personnaliser le plan développe l'esprit critique et la métacognition." }
         };
 
         function submitQCM(qcmId) {
-            const optionsContainer = document.getElementById(`qcm-options-${qcmId}`);
-            const feedbackArea = document.getElementById(`feedback-${qcmId}`);
-            const selectedOption = optionsContainer.querySelector(`input[name="qcm${qcmId}"]:checked`);
-            const validateBtn = feedbackArea.previousElementSibling;
+            const options = document.getElementById(`qcm-options-${qcmId}`);
+            const selected = options.querySelector(`input[name="qcm${qcmId}"]:checked`);
+            const feedback = document.getElementById(`feedback-${qcmId}`);
+            const validateBtn = feedback.previousElementSibling;
 
-            if (!selectedOption) {
-                feedbackArea.textContent = 'Veuillez sélectionner une option.';
-                feedbackArea.className = 'feedback-area incorrect';
-                feedbackArea.style.display = 'block';
+            if (!selected) {
+                feedback.textContent = 'Veuillez sélectionner une option.';
+                feedback.className = 'feedback-area incorrect';
+                feedback.style.display = 'block';
                 return;
             }
 
-            const isCorrect = selectedOption.value === QCM_ANSWERS[qcmId].correct;
-            const correctLetter = QCM_ANSWERS[qcmId].correct;
-            const explanation = QCM_ANSWERS[qcmId].explanation;
-
-            feedbackArea.style.display = 'block';
+            const isCorrect = selected.value === QCM_ANSWERS[qcmId].correct;
+            feedback.style.display = 'block';
             validateBtn.style.display = 'none';
 
             if (isCorrect) {
-                feedbackArea.className = 'feedback-area correct';
-                feedbackArea.innerHTML = `<strong class="result">✅ Réponse Correcte !</strong>
-                                         <p class="explanation">L'option <span>${correctLetter}</span> est la meilleure pratique.
-                                         ${explanation}</p>`;
+                feedback.className = 'feedback-area correct';
+                feedback.innerHTML = `
+                    <strong class="result">✅ Réponse Correcte !</strong>
+                    <p class="explanation">Option ${QCM_ANSWERS[qcmId].correct} : ${QCM_ANSWERS[qcmId].explanation}</p>
+                `;
             } else {
-                feedbackArea.className = 'feedback-area incorrect';
-                feedbackArea.innerHTML = `<strong class="result">❌ Réponse Incorrecte.</strong>
-                                         <p class="explanation">La bonne réponse est l'option <span>${correctLetter}</span>.
-                                         ${explanation}</p>`;
+                feedback.className = 'feedback-area incorrect';
+                feedback.innerHTML = `
+                    <strong class="result">❌ Réponse Incorrecte.</strong>
+                    <p class="explanation">Bonne réponse : Option ${QCM_ANSWERS[qcmId].correct} : ${QCM_ANSWERS[qcmId].explanation}</p>
+                `;
             }
 
-            optionsContainer.querySelectorAll('input').forEach(input => input.disabled = true);
+            options.querySelectorAll('input').forEach(input => input.disabled = true);
         }
 
-        // --- LOGIQUE PARTIE 4 (inchangée) ---
+        // ========== PARTIE 4 : PLUS-VALUE ==========
         const questionsPlusValue = [
-            { texte: "Préparer une fiche de cours complète générée automatiquement par l'IA.", bonne: "nuance", reponses: { oui: "❌ Mauvais choix. L'enseignant doit garder la maîtrise pédagogique et vérifier/adapter le contenu.", non: "❌ Trop radical. Cela peut être utile comme point de départ ou pour vérifier des omissions.", nuance: "✅ Bonne réponse. C'est à nuancer : cela peut inspirer mais doit être adapté et validé par l'enseignant pour garantir la cohérence pédagogique." } },
-            { texte: "Générer plusieurs exercices progressifs adaptés aux niveaux des élèves.", bonne: "oui", reponses: { oui: "✅ Bonne réponse. Véritable plus-value pour la différenciation et l'allègement de la charge de travail.", non: "❌ Mauvais choix. Ici l'IA apporte une vraie valeur en termes de quantité et de ciblage.", nuance: "⚠️ Acceptable. À condition de vérifier la qualité des exercices et leur alignement avec les objectifs." } },
-            { texte: "Demander à l'IA de corriger automatiquement toutes les copies, y compris la notation.", bonne: "non", reponses: { oui: "❌ Mauvais choix. L'IA ne peut pas remplacer le jugement pédagogique humain nécessaire à l'évaluation formative.", non: "✅ Bonne réponse. Pas de plus-value. La délégation complète de l'évaluation formative est déconseillée.", nuance: "⚠️ Acceptable. Peut assister l'enseignant en identifiant les erreurs fréquentes, mais ne doit pas noter l'élève." } },
-            { texte: "Utiliser l'IA pour produire des visuels (schémas, infographies) adaptés au cours.", bonne: "oui", reponses: { oui: "✅ Bonne réponse. Aide à la clarté et la mémorisation en diversifiant les supports.", non: "❌ Mauvais choix. Ici l'IA apporte une réelle valeur ajoutée créative et didactique.", nuance: "⚠️ Acceptable. Vérifier la pertinence et l'exactitude des exemples proposés." } },
-            { texte: "Demander à l'IA de reformuler un texte pour le rendre accessible à des élèves allophones ou en difficulté.", bonne: "oui", reponses: { oui: "✅ Bonne réponse. Forte plus-value pour l'inclusion et l'accessibilité des contenus.", non: "❌ Mauvais choix. C'est un usage très pertinent pour la différenciation.", nuance: "⚠️ Acceptable. Vérifier la qualité et la fidélité des reformulations." } },
-            { texte: "Générer un plan de séquence complet sans relecture ni adaptation.", bonne: "nuance", reponses: { oui: "❌ Mauvais choix. L'IA ne peut pas prévoir la réalité de la classe et les interactions avec les élèves.", non: "❌ Trop radical. Peut être utile comme point de départ pour l'organisation.", nuance: "✅ Bonne réponse. À nuancer. Utile pour l'inspiration, mais l'adaptation et la personnalisation par l'enseignant sont obligatoires." } },
-            { texte: "Créer un quiz de révision factuel, puis faire corriger l'IA par les élèves pour développer leur esprit critique.", bonne: "oui", reponses: { oui: "✅ Bonne réponse. Double plus-value : gain de temps et exercice de pensée critique sur la fiabilité de l'IA.", non: "❌ Mauvais choix. Ici, il y a une vraie valeur ajoutée et un objectif pédagogique fort.", nuance: "⚠️ Acceptable. Mais un usage critique est la meilleure façon d'intégrer l'outil." } },
-            { texte: "Utiliser l'IA pour générer différents corrigés modèles d'une dissertation.", bonne: "oui", reponses: { oui: "✅ Bonne réponse. Cela permet de proposer plusieurs modèles de raisonnement et d'ouvrir la discussion sur la diversité des approches possibles.", non: "❌ Mauvais choix. Cet usage enrichit la compréhension des critères d'évaluation.", nuance: "⚠️ Acceptable. L'intérêt dépend du moment et de la manière dont c'est utilisé en classe." } },
-            { texte: "Demander à l'IA de proposer des adaptations pédagogiques pour élèves à besoins particuliers.", bonne: "oui", reponses: { oui: "✅ Bonne réponse. Gain de temps pour l'enseignant et outil précieux pour générer des pistes d'adaptation différenciées et inclusives.", non: "❌ Mauvais choix. L'IA permet justement d'apporter un soutien à la personnalisation pédagogique.", nuance: "⚠️ Acceptable. Les propositions doivent être vérifiées mais représentent un vrai atout pour l'enseignant." } },
-            { texte: "Générer des exemples concrets pour illustrer une notion abstraite.", bonne: "oui", reponses: { oui: "✅ Bonne réponse. Aide à la compréhension et à la mémorisation grâce à la richesse et la rapidité des illustrations.", non: "❌ Mauvais choix. Ici, la plus-value est réelle.", nuance: "⚠️ Acceptable. Vérifier la pertinence et l'exactitude des exemples proposés." } }
+            {
+                texte: "Préparer une fiche de cours complète générée automatiquement par l'IA.",
+                bonne: "nuance",
+                reponses: {
+                    oui: "❌ L'enseignant doit adapter et valider le contenu.",
+                    non: "❌ Peut servir de point de départ.",
+                    nuance: "✅ À nuancer: utile pour s'inspirer mais nécessite adaptation."
+                }
+            },
+            {
+                texte: "Générer plusieurs exercices progressifs adaptés aux niveaux.",
+                bonne: "oui",
+                reponses: {
+                    oui: "✅ Véritable plus-value pour la différenciation.",
+                    non: "❌ L'IA apporte une vraie valeur ici.",
+                    nuance: "⚠️ Acceptable si qualité vérifiée."
+                }
+            },
+            {
+                texte: "Demander à l'IA de corriger automatiquement toutes les copies.",
+                bonne: "non",
+                reponses: {
+                    oui: "❌ L'évaluation formative nécessite un jugement humain.",
+                    non: "✅ Pas de plus-value pour une correction complète.",
+                    nuance: "⚠️ Peut identifier des erreurs fréquentes."
+                }
+            },
+            {
+                texte: "Utiliser l'IA pour produire des visuels adaptés au cours.",
+                bonne: "oui",
+                reponses: {
+                    oui: "✅ Aide à la clarté et la mémorisation.",
+                    non: "❌ Apporte une réelle valeur ajoutée.",
+                    nuance: "⚠️ Vérifier la pertinence des visuels."
+                }
+            },
+            {
+                texte: "Adapter un texte pour élèves allophones ou en difficulté.",
+                bonne: "oui",
+                reponses: {
+                    oui: "✅ Forte plus-value pour l'inclusion.",
+                    non: "❌ Usage très pertinent.",
+                    nuance: "⚠️ Vérifier la qualité des adaptations."
+                }
+            }
         ];
-        let indexPlusValue = -1;
-        let scorePlusValue = 0;
+
+        let currentQuestionIndex = -1;
+        let score = 0;
 
         function suivantPlusValue() {
+            currentQuestionIndex++;
             const nextBtn = document.getElementById("suivant-plusvalue");
-            indexPlusValue++;
-            if (indexPlusValue < questionsPlusValue.length) {
-                document.getElementById("question-plusvalue").innerText = questionsPlusValue[indexPlusValue].texte;
+
+            if (currentQuestionIndex < questionsPlusValue.length) {
+                document.getElementById("question-plusvalue").innerText = questionsPlusValue[currentQuestionIndex].texte;
                 document.getElementById("choix").style.display = "flex";
                 document.getElementById("feedback-plusvalue").style.display = "none";
                 nextBtn.style.display = "none";
                 nextBtn.innerText = "➡️ Suivant";
                 document.querySelectorAll('#choix button').forEach(btn => btn.disabled = false);
             } else {
-                document.getElementById("carte").style.display = "none";
+                document.querySelector(".carte").style.display = "none";
                 document.getElementById("fin-plusvalue").style.display = "block";
-                document.getElementById("fin-plusvalue").innerHTML = `🎯 Fin de l'activité ! Votre score final est de **${scorePlusValue}/${questionsPlusValue.length}**. <br><br>Conclusion : l'IA est un excellent assistant si elle sert l'enrichissement pédagogique et vous permet de vous recentrer sur l'humain et la relation éducative.`;
+                document.getElementById("fin-plusvalue").innerHTML = `
+                    🎯 Fin de l'activité ! Votre score: <strong>${score}/${questionsPlusValue.length}</strong>.
+                    <br><br>L'IA est un excellent assistant pour enrichir la pédagogie.
+                `;
                 nextBtn.style.display = "none";
             }
-            document.getElementById("score-plusvalue").innerText = "Score : " + scorePlusValue + " / " + questionsPlusValue.length;
+
+            document.getElementById("score-plusvalue").innerText = `Score : ${score} / ${questionsPlusValue.length}`;
         }
 
         function repondre(type) {
-            const fb = questionsPlusValue[indexPlusValue].reponses[type];
+            const question = questionsPlusValue[currentQuestionIndex];
             const feedbackElement = document.getElementById("feedback-plusvalue");
             const nextBtn = document.getElementById("suivant-plusvalue");
 
-            if (type === questionsPlusValue[indexPlusValue].bonne) {
-                scorePlusValue++;
-                feedbackElement.className = 'feedback-area correct';
+            if (type === question.bonne) {
+                score++;
+                feedbackElement.className = 'feedback correct';
             } else {
-                feedbackElement.className = 'feedback-area incorrect';
+                feedbackElement.className = 'feedback incorrect';
             }
 
-            feedbackElement.innerHTML = fb.replace("✅ Bonne réponse.", "<span style='color: var(--success-color); font-weight: 700;'>✅ Bonne réponse.</span>")
-                                          .replace("❌ Mauvais choix.", "<span style='color: var(--error-color); font-weight: 700;'>❌ Mauvais choix.</span>")
-                                          .replace("⚠️ Acceptable.", "<span style='color: var(--accent-orange); font-weight: 700;'>⚠️ Acceptable.</span>");
+            feedbackElement.innerHTML = question.reponses[type]
+                .replace("✅", "<span style='color: var(--success-color);'>✅</span>")
+                .replace("❌", "<span style='color: var(--error-color);'>❌</span>")
+                .replace("⚠️", "<span style='color: var(--accent-orange);'>⚠️</span>");
+
             feedbackElement.style.display = "block";
             nextBtn.style.display = "block";
             document.querySelectorAll('#choix button').forEach(btn => btn.disabled = true);
-            document.getElementById("score-plusvalue").innerText = "Score : " + scorePlusValue + " / " + questionsPlusValue.length;
+            document.getElementById("score-plusvalue").innerText = `Score : ${score} / ${questionsPlusValue.length}`;
         }
 
-        window.onload = () => {
+        // ========== INITIALISATION ==========
+        window.onload = function() {
+            initPart1();
             goToSection(1);
-            initEventListeners();
-            updateProgress();
         };
     </script>
 </body>
