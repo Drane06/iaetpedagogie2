@@ -1,1461 +1,485 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>L'IA Générative au service de la Pédagogie</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root {
-            --primary: #1b855a;
-            --primary-light: #4caf7d;
-            --primary-dark: #0f4d36;
-            --accent-blue: #4a90e2;
-            --accent-orange: #f39c12;
-            --accent-purple: #9b59b6;
-            --accent-red: #e74c3c;
-            --text: #333;
-            --text-light: #666;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            --border-radius: 15px;
-            --transition: all 0.3s ease;
-            --success-color: #27ae60;
-            --error-color: #c0392b;
-            --red-trap: var(--error-color);
-            --green-1: var(--success-color);
-            --blue-hover: #3a7bc8;
-            --grey-light: #f4f4f4;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--primary-dark) 0%, #1c6d48 50%, #2f8e65 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: var(--text);
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(circle at 20% 30%, rgba(74, 144, 226, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(27, 133, 90, 0.15) 0%, transparent 50%);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-            border: 1px solid rgba(27, 133, 90, 0.2);
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .section h2 {
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 2em;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .instruction {
-            text-align: center;
-            margin-bottom: 25px;
-            padding: 20px;
-            background: rgba(27, 133, 90, 0.1);
-            border-radius: 10px;
-            color: var(--text-light);
-            line-height: 1.6;
-            border-left: 5px solid var(--primary);
-        }
-
-        .task-area {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .task-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-        }
-
-        .card {
-            background: white;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            transition: var(--transition);
-            font-size: 0.9em;
-            font-weight: 600;
-        }
-
-        .card:hover {
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .card.task {
-            cursor: pointer;
-            border: 2px solid transparent;
-            text-align: center;
-        }
-
-        .card.task:hover {
-            border-color: var(--accent-blue);
-        }
-
-        .card.task.selected {
-            border-color: var(--accent-blue);
-            background-color: #e6f7ff;
-            box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
-            transform: scale(1.02);
-        }
-
-        .card.task.completed {
-            background-color: var(--success-color);
-            color: white;
-            pointer-events: none;
-            cursor: default;
-            border-color: var(--primary-dark);
-            opacity: 0.8;
-            text-decoration: line-through;
-        }
-
-        .drop-zone-container {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .drop-slot {
-            flex: 1;
-            min-height: 120px;
-            border: 3px dashed #aaa;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-            transition: all 0.2s;
-            position: relative;
-        }
-        
-        .drop-slot.tool {
-            border-color: var(--primary-light);
-        }
-
-        .drop-slot.precaution {
-            border-color: var(--accent-orange);
-        }
-
-        .drop-slot.drag-over {
-            background-color: rgba(74, 144, 226, 0.1);
-            border-color: var(--accent-blue);
-        }
-
-        .drop-slot.filled {
-            border-style: solid;
-            background-color: rgba(27, 133, 90, 0.05);
-        }
-
-        .slot-label {
-            color: var(--text-light);
-            font-style: italic;
-            font-weight: 500;
-        }
-
-        .drop-slot.filled .slot-label {
-            display: none;
-        }
-
-        .dropped-card {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: default;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            transition: none !important; /* Override card transition for dropped item */
-        }
-        
-        .dropped-card:hover {
-            transform: none !important;
-        }
-
-        .source-area {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        .source-column .card {
-            cursor: grab;
-            margin-bottom: 10px;
-        }
-        
-        .source-column .card[draggable="false"] {
-            opacity: 0.5;
-            cursor: default;
-        }
-
-        .card.tool {
-            background-color: #f0f8ff;
-            border-left: 3px solid var(--primary);
-        }
-
-        .card.precaution {
-            background-color: #fffaf0;
-            border-left: 3px solid var(--accent-orange);
-        }
-
-        .card-title {
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .card-note, .card-desc {
-            font-size: 0.8em;
-            color: var(--text-light);
-            line-height: 1.3;
-        }
-
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .btn {
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none !important;
-            box-shadow: none !important;
-        }
-
-        .btn-validate {
-            background: var(--primary);
-            color: white;
-            border: none;
-            box-shadow: 0 4px 10px rgba(27, 133, 90, 0.3);
-        }
-
-        .btn-validate:not(:disabled):hover {
-            background: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(27, 133, 90, 0.4);
-        }
-
-        .btn-reset {
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-        }
-
-        .btn-reset:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
-        }
-
-        .progress {
-            height: 10px;
-            background-color: #ddd;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .bar {
-            height: 100%;
-            width: 0;
-            background-color: var(--primary-light);
-            transition: width 0.5s ease;
-            border-radius: 5px;
-        }
-
-        #customModal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        #customModal.show {
-            display: flex;
-        }
-
-        #modalBox {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            max-width: 600px;
-            width: 90%;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        #modalTitle {
-            font-size: 1.5em;
-            margin-bottom: 15px;
-            font-weight: 800;
-            color: var(--primary-dark);
-        }
-
-        #modalMessage {
-            font-size: 1em;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            text-align: left;
-            color: var(--text);
-        }
-
-        #modalMessage h3 {
-            font-size: 1.2em;
-            color: var(--primary-dark);
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .schema-step {
-            position: relative;
-            padding: 25px;
-            margin: 20px 0;
-            background: linear-gradient(135deg, rgba(27, 133, 90, 0.1), rgba(27, 133, 90, 0.05));
-            border-left: 5px solid var(--primary);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .schema-step:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 20px rgba(27, 133, 90, 0.2);
-        }
-
-        .schema-step-content {
-            display: none;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(27, 133, 90, 0.2);
-            line-height: 1.6;
-            color: #555;
-            font-style: italic;
-        }
-
-        .schema-step.active .schema-step-content {
-            display: block;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .step-icon-container {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            border-radius: 50%;
-            font-weight: bold;
-            font-size: 1.2em;
-            margin-right: 15px;
-            flex-shrink: 0;
-        }
-
-        .action-btn {
-            display: block;
-            margin: 25px auto;
-            padding: 15px 45px;
-            font-size: 1.1em;
-            font-weight: 600;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 10px 30px rgba(27, 133, 90, 0.3);
-        }
-
-        .action-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(27, 133, 90, 0.4);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 900px) {
-            .source-area { grid-template-columns: 1fr; }
-            .drop-zone-container { flex-direction: column; }
-            .task-list { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-        }
-
-        @media (max-width: 600px) {
-            .task-list { grid-template-columns: 1fr; }
-        }
-
-        /* Styles pour la partie QCM */
-        .qcm-container {
-            max-width: 900px;
-            margin: 30px auto;
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(27, 133, 90, 0.1);
-        }
-
-        .case-study {
-            margin-bottom: 40px;
-            padding: 25px;
-            border-radius: 15px;
-            background: rgba(74, 144, 226, 0.03);
-            border-left: 5px solid var(--accent-blue);
-            transition: transform 0.3s ease;
-        }
-
-        .case-study:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(74, 144, 226, 0.1);
-        }
-
-        .case-scenario {
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px dashed rgba(74, 144, 226, 0.3);
-        }
-
-        .case-scenario strong {
-            display: block;
-            margin-bottom: 10px;
-            color: var(--accent-blue);
-            font-size: 1.2em;
-        }
-
-        .qcm-question {
-            background: rgba(74, 144, 226, 0.08);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border-left: 4px solid var(--accent-blue);
-            font-size: 1.1em;
-            line-height: 1.6;
-        }
-
-        .qcm-options {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .qcm-options label {
-            display: block;
-            background: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            border: 2px solid rgba(74, 144, 226, 0.2);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .qcm-options label:hover {
-            border-color: var(--accent-blue);
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
-        }
-
-        .qcm-options input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .qcm-options input[type="radio"]:checked + span {
-            background: rgba(74, 144, 226, 0.1);
-            border-color: var(--accent-blue);
-            font-weight: 600;
-        }
-
-        .qcm-options span {
-            display: block;
-            padding-left: 35px;
-            position: relative;
-        }
-
-        .qcm-options span::before {
-            content: '';
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(74, 144, 226, 0.4);
-            border-radius: 50%;
-            transition: all 0.2s ease;
-        }
-
-        .qcm-options input[type="radio"]:checked + span::before {
-            background: var(--accent-blue);
-            border-color: var(--accent-blue);
-        }
-
-        .qcm-options span::after {
-            content: attr(data-letter);
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: 700;
-            color: var(--accent-blue);
-            width: 25px;
-            text-align: center;
-        }
-
-        .validate-btn {
-            display: block;
-            margin: 20px auto 0;
-            padding: 12px 30px;
-            background: var(--accent-blue);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
-        }
-
-        .validate-btn:hover {
-            background: #3a7bc8;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 18px rgba(74, 144, 226, 0.3);
-        }
-
-        .feedback-area {
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            display: none;
-            text-align: center;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .feedback-area.correct {
-            background: rgba(39, 174, 96, 0.1);
-            border: 1px solid var(--success-color);
-            color: var(--success-color);
-        }
-
-        .feedback-area.incorrect {
-            background: rgba(231, 76, 60, 0.08);
-            border: 1px solid var(--error-color);
-            color: var(--error-color);
-        }
-
-        .feedback-area .result {
-            font-size: 1.3em;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .feedback-area .explanation {
-            font-size: 1em;
-            line-height: 1.6;
-            text-align: left;
-        }
-
-        .feedback-area .explanation span {
-            font-weight: 700;
-            text-decoration: underline;
-        }
-
-        @media (min-width: 768px) {
-            .qcm-options {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        /* Styles pour la partie 4 (Dilemme) */
-        .dilemme-container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 30px;
-            background: white;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .declaration {
-            font-size: 1.3em;
-            font-weight: 600;
-            margin-bottom: 30px;
-            padding: 20px;
-            border-radius: 10px;
-            background: var(--grey-light);
-            border: 1px solid #ddd;
-            color: var(--text);
-        }
-
-        .boutons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px 0;
-        }
-
-        .btn-dilemme {
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            transition: var(--transition);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-dilemme:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-oui {
-            background: var(--error-color);
-            color: white;
-        }
-
-        .btn-non {
-            background: var(--success-color);
-            color: white;
-        }
-
-        .btn-nuance {
-            background: var(--accent-orange);
-            color: white;
-        }
-
-        .feedback-dilemme {
-            padding: 20px;
-            border-radius: 10px;
-            margin: 30px 0 0;
-            text-align: left;
-            display: none;
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        .feedback-dilemme h4 {
-            font-size: 1.1em;
-            margin-bottom: 10px;
-            font-weight: 800;
-        }
-
-        .feedback-dilemme.oui {
-            background: rgba(231, 76, 60, 0.1);
-            border: 2px solid var(--error-color);
-        }
-
-        .feedback-dilemme.non {
-            background: rgba(39, 174, 96, 0.1);
-            border: 2px solid var(--success-color);
-        }
-
-        .feedback-dilemme.nuance {
-            background: rgba(243, 156, 18, 0.1);
-            border: 2px solid var(--accent-orange);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L’IA Générative au service de la Pédagogie</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Configuration Tailwind pour la police Inter */
+    html { font-family: 'Inter', sans-serif; }
+    /* Amélioration du focus pour les éléments interactifs */
+    select:focus, button:focus { 
+        outline: 3px solid #6ee7b7; /* green-300 */
+        outline-offset: 2px;
+    }
+    .fade-in { animation: fadeIn 0.5s ease-in-out; }
+    @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+    
+    /* Style pour les boutons radio personnalisés */
+    input[type="radio"] {
+        appearance: none;
+        width: 1em;
+        height: 1em;
+        border: 2px solid #059669;
+        border-radius: 50%;
+        margin-right: 0.5em;
+        position: relative;
+        top: 0.1em;
+        cursor: pointer;
+        transition: all 0.2s;
+        flex-shrink: 0; /* Empêche le shrinking dans un flex container */
+    }
+
+    input[type="radio"]:checked {
+        background-color: #059669;
+        border-color: #059669;
+        box-shadow: 0 0 0 3px #d1fae5;
+    }
+    
+    /* Amélioration de l'esthétique des labels de QCM */
+    label {
+        display: flex; /* Utilisation de flex pour aligner radio et texte */
+        align-items: flex-start; /* Alignement en haut pour les textes longs */
+        padding: 0.5rem 0;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        border-radius: 0.5rem;
+        padding-left: 0.5rem;
+    }
+    
+    label:hover {
+        background-color: #f0fdf4;
+    }
+    
+    /* Classe pour les messages de correction */
+    .correct-part {
+        color: #047857; /* green-700 */
+        font-weight: bold;
+    }
+  </style>
 </head>
-<body>
-    <div class="container">
-        <!-- HEADER PÉDAGOGIQUE -->
-        <header class="text-center py-10">
-            <h1 class="text-4xl md:text-5xl font-extrabold mb-4" style="color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-                L'IA Générative au service de la pédagogie
-            </h1>
-            <p class="text-xl text-white opacity-90">
-                Un guide interactif pour les enseignants : outils, usages, et éthique.
-            </p>
-        </header>
 
-        <!-- PARTIE 1 : JEU D'ASSOCIATION -->
-        <div class="section active" id="section1">
-            <h2>Partie 1 : Association tâche, outil et précautions</h2>
-            <div class="instruction">
-                <strong>Objectif :</strong> Associez une tâche (cliquez pour sélectionner) à l'outil IA le plus adapté (glisser-déposer au centre) et à une précaution essentielle.
-                <br><em>Complétez les  tâches suivantes.</em
-            </div>
+<body class="bg-gradient-to-br from-green-900 to-emerald-700 text-gray-800 font-sans">
 
-            <div class="new-game-container">
-                <div class="progress"><div class="bar" id="progressBar"></div></div>
+  <!-- HEADER -->
+  <header class="text-center text-white py-12 px-4 shadow-lg">
+    <h1 class="text-4xl md:text-5xl font-extrabold mb-3">💡 L’IA Générative au service de la Pédagogie</h1>
+    <p class="text-lg md:text-xl opacity-90">Un guide interactif pour les enseignants : outils, usages et éthique.</p>
+  </header>
 
-                <div class="task-area">
-                    <h3>📝 Tâches (Cliquez pour sélectionner)</h3>
-                    <div class="task-list" id="taskList">
-                        <div class="card task" data-id="qcm">Créer un QCM exportable</div>
-                        <div class="card task" data-id="questions">Générer rapidement des questions pour une évaluation</div>
-                        <div class="card task" data-id="versions">Proposer plusieurs versions d'un exercice</div>
-                        <div class="card task" data-id="bilan">Bilan de révision à partir d'un document (avec explications)</div>
-                        <div class="card task" data-id="adapter">Adapter un document dans différents styles (ex: langage soutenu vers familier)</div>
-                        <div class="card task" data-id="presentation">Réaliser la présentation d'un cours (slides, support visuel)</div>
-                        <div class="card task" data-id="resume">Réaliser un résumé audio/vidéo d'un PDF</div>
-                        <div class="card task" data-id="commentaires">Rédiger des commentaires individualisés sur des travaux</div>
-                        <div class="card task" data-id="feedbacks">Produire des feedbacks formatifs immédiats (sans note)</div>
-                        <div class="card task" data-id="progression">Construire une progression de séquence (planification)</div>
-                        <div class="card task" data-id="recherche">Recherches d'information documentées et sourcées</div>
-                        <div class="card task" data-id="enigmes">Créer des énigmes pédagogiques / escape game</div>
-                    </div>
-                </div>
+  <main class="max-w-5xl mx-auto my-10 px-6 space-y-16">
 
-                <div class="drop-zone-container">
-                    <div class="drop-slot tool" id="toolSlot">
-                        <span class="slot-label">Déposez l'outil ici</span>
-                    </div>
-                    <div class="drop-slot precaution" id="precautionSlot">
-                        <span class="slot-label">Déposez la précaution ici</span>
-                    </div>
-                </div>
+    <!-- ==================== PARTIE 1 : ASSOCIATION ==================== -->
+    <section id="partie1" class="bg-white p-8 rounded-2xl shadow-xl">
+      <h2 class="text-2xl font-bold text-emerald-700 mb-4">🧩 Partie 1 — Associer tâche / outil IA / recommandation</h2>
+      <p class="italic mb-6 text-gray-600">
+        Objectif : associer chaque usage pédagogique à l’outil d’IA le plus pertinent et à la recommandation essentielle.
+      </p>
 
-                <div class="action-buttons">
-                    <button class="btn btn-validate" id="btnValidate" disabled>✓ Valider l'association</button>
-                    <button class="btn btn-reset" id="btnReset">↻ Réinitialiser les choix</button>
-                </div>
+      <div id="activity-container" class="bg-emerald-50 p-6 rounded-xl shadow-inner text-center fade-in" tabindex="-1">
+        <h3 id="activity-title" class="text-xl font-semibold text-emerald-800 mb-3"></h3>
+        <p id="activity-question" class="mb-4 text-gray-700 text-lg font-medium"></p>
 
-                <div class="source-area mt-8">
-                    <div class="source-column">
-                        <h3>🤖 Outils IA (Glissez-déposez)</h3>
-                        <div id="toolSourceList">
-                            <div class="card tool" data-id="quizwizard" draggable="true">
-                                <div class="card-title">Quiz Wizard avec création de compte</div>
-                                <div class="card-note">Spécialisé pour les QCM/Quiz.</div>
-                            </div>
-                            <div class="card tool" data-id="chatgpt" draggable="true">
-                                <div class="card-title">ChatGPT/Gemini/Mistral le Chat (LLM généraliste) avec création de compte</div>
-                                <div class="card-note">Idéal pour la génération de texte et l'itération rapide.</div>
-                            </div>
-                            <div class="card tool" data-id="perplexity" draggable="true">
-                                <div class="card-title">Perplexity avec création de compte plus de fonctionnalités</div>
-                                <div class="card-note">Recherche d'information fiable et sourcée.</div>
-                            </div>
-                            <div class="card tool" data-id="gamma" draggable="true">
-                                <div class="card-title">Gamma avec création de compte</div>
-                                <div class="card-note">Génération de présentations.</div>
-                            </div>
-                            <div class="card tool" data-id="notebooklm" draggable="true">
-                                <div class="card-title">NotebookLM avec création de compte</div>
-                                <div class="card-note">Analyse, synthèse vidéo et audio, questionnement de documents volumineux.</div>
-                            </div>
-                            <div class="card tool" data-id="canva" draggable="true">
-                                <div class="card-title">Canva avec création de compte</div>
-                                <div class="card-note">Montage vidéo/audio simple, création de supports visuels.</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="source-column">
-                        <h3>⚠️ Précautions (Glissez-déposez)</h3>
-                        <div id="precautionSourceList">
-                            <div class="card precaution" data-id="verif_fact_pertinence" draggable="true">
-                                <div class="card-title">Vérification factuelle et pertinence</div>
-                                <div class="card-desc">L'IA fait des erreurs (hallucinations). Toujours vérifier l'exactitude des informations.</div>
-                            </div>
-                            <div class="card precaution" data-id="renseignement_contexte" draggable="true">
-                                <div class="card-title">Renseignement du contexte (Prompt détaillé)</div>
-                                <div class="card-desc">Indiquer le contexte, le niveau,  la durée, les compétences visées, le résultat... C'est la clé de la qualité.</div>
-                            </div>
-                            <div class="card precaution" data-id="intention_pedagogique" draggable="true">
-                                <div class="card-title">Intention pédagogique (Difficulté)</div>
-                                <div class="card-desc">L'outil ne doit pas dicter la difficulté.</div>
-                            </div>
-                            <div class="card precaution" data-id="verif_fact_esprit_critique" draggable="true">
-                                <div class="card-title">Vérification factuelle et esprit critique</div>
-                                <div class="card-desc">L'IA génère du texte fluide mais parfois sans profondeur. Le vérifier et l'utiliser comme point de départ pour la critique.</div>
-                            </div>
-                            <div class="card precaution" data-id="intention_pedagogique_ton" draggable="true">
-                                <div class="card-title">Intention pédagogique (Ton et Objectif)</div>
-                                <div class="card-desc">Le changement de style doit servir l'apprentissage (accessibilité), et non la simplification du fond.</div>
-                            </div>
-                            <div class="card precaution" data-id="intention_pedagogique_surcharge" draggable="true">
-                                <div class="card-title">Intention pédagogique</div>
-                                <div class="card-desc">S'assurer que le résultat correspond bien au document de départ.</div>
-                            </div>
-                            <div class="card precaution" data-id="confidentialite_feedback" draggable="true">
-                                <div class="card-title">Confidentialité et RGPD/feedback</div>
-                                <div class="card-desc">NE JAMAIS utiliser de données personnelles ou sensibles d'élèves (noms, notes,...) dans l'outil IA.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="customModal">
-                <div id="modalBox">
-                    <h3 id="modalTitle">Message</h3>
-                    <p id="modalMessage"></p>
-                    <button class="btn btn-validate" id="btnCloseModal">OK</button>
-                </div>
-            </div>
-
-            <button class="action-btn" onclick="goToSection(2)">Passer aux axes de transformation ➡️</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4 text-left">
+          <div>
+            <label for="select-tool" class="font-bold text-sm text-gray-700 mb-1 block">🛠️ Choisir l’outil IA :</label>
+            <select id="select-tool" class="w-full p-3 border border-emerald-300 rounded-lg bg-white shadow-sm transition duration-150 ease-in-out hover:border-emerald-500">
+              <option value="">-- Sélectionner un outil --</option>
+            </select>
+          </div>
+          <div>
+            <label for="select-warning" class="font-bold text-sm text-gray-700 mb-1 block">⚠️ Choisir la recommandation :</label>
+            <select id="select-warning" class="w-full p-3 border border-emerald-300 rounded-lg bg-white shadow-sm transition duration-150 ease-in-out hover:border-emerald-500">
+              <option value="">-- Sélectionner une recommandation --</option>
+            </select>
+          </div>
         </div>
 
-        <!-- PARTIE 2 : 5 AXES DE TRANSFORMATION -->
-        <div class="section" id="section2">
-            <h2>Partie 2 : Les 5 axes de la transformation pédagogique</h2>
-            <div class="instruction">
-                <strong>Objectif :</strong> Découvrir comment l'IA générative soutient les principes clés d'une pédagogie centrée sur l'humain avec des justifications précises.
-            </div>
+        <button id="validate-btn" onclick="validateActivity()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-full shadow-lg font-bold transition duration-300 ease-in-out transform hover:scale-105">Valider l'association</button>
+        <p id="activity-feedback" class="mt-4 p-2 rounded-lg"></p>
 
-            <div style="max-width: 800px; margin: 40px auto; padding: 40px; background: white; border-radius: 20px; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);">
-                <div class="schema-step" onclick="toggleStep(this)">
-                    <span class="step-icon-container" style="background: linear-gradient(135deg, var(--accent-blue), #3a7bc8);">1</span>
-                    <span style="font-size: 1.3em; font-weight: 700; color: var(--accent-blue);">👤 Agentivité et autonomie de l'élève</span>
-                    <div class="schema-step-content">
-                        <p>L'IA passe du statut de source d'information à celui de partenaire cognitif. L'élève l'utilise pour demander des clarifications sur un point obscur, générer des analogies personnalisées ou créer son propre test de révision. L'objectif est de le rendre proactif dans la gestion de ses lacunes et de ses méthodes de travail, favorisant le concept de méta-cognition.</p>
-                    </div>
-                </div>
-                <div class="schema-step" onclick="toggleStep(this)">
-                    <span class="step-icon-container" style="background: linear-gradient(135deg, var(--primary), var(--primary-light));">2</span>
-                    <span style="font-size: 1.3em; font-weight: 700; color: var(--primary);">📊 Différenciation pédagogique Massifiée</span>
-                    <div class="schema-step-content">
-                        <p>Grâce à l'IA, l'enseignant peut générer en quelques secondes plusieurs niveaux d'exercices ou de supports de lecture (simplifié, standard, approfondi) pour un même concept. Elle permet également de fournir des feedbacks immédiats et non notés, ciblés sur des compétences spécifiques, ce qui était logistiquement impossible à réaliser individuellement pour chaque élève sans ce type d'outil.</p>
-                    </div>
-                </div>
-                <div class="schema-step" onclick="toggleStep(this)">
-                    <span class="step-icon-container" style="background: linear-gradient(135deg, var(--accent-orange), #e67e22);">3</span>
-                    <span style="font-size: 1.3em; font-weight: 700; color: var(--accent-orange);">💡 Créativité et innovation des scénarios</span>
-                    <div class="schema-step-content">
-                        <p>L'IA devient un accélérateur de la conception créative. Au lieu de passer des heures à écrire un scénario complet, l'enseignant peut lui demander d'ébaucher rapidement des situations-problèmes complexes, des textes de loi fictifs pour un débat, ou la structure d'un escape game autour des notions du chapitre. On passe de la consommation à la production de contenus engageants.</p>
-                    </div>
-                </div>
-                <div class="schema-step" onclick="toggleStep(this)">
-                    <span class="step-icon-container" style="background: linear-gradient(135deg, var(--accent-purple), #8e44ad);">4</span>
-                    <span style="font-size: 1.3em; font-weight: 700; color: var(--accent-purple);">⏳ Allègement de la charge mentale et tâches répétitives</span>
-                    <div class="schema-step-content">
-                        <p>En automatisant les tâches fastidieuses et peu valorisantes (comme la formulation variée d'objectifs, la rédaction de mails administratifs standards, ou l'ébauche de plans de cours), l'IA libère du temps précieux. Ce temps peut être réinvesti dans la relation pédagogique avec l'élève, l'analyse fine des productions, et le développement de projets complexes demandant une expertise humaine.</p>
-                    </div>
-                </div>
-                <div class="schema-step" onclick="toggleStep(this)">
-                    <span class="step-icon-container" style="background: linear-gradient(135deg, var(--primary-dark), #3cb371);">5</span>
-                    <span style="font-size: 1.3em; font-weight: 700; color: var(--primary-dark);">🧐 Développement de la pensée critique et de la vérification</span>
-                    <div class="schema-step-content">
-                        <p>L'IA est un outil fantastique pour générer des textes délibérément erronés ou biaisés. Elle fournit une matière première pour des exercices d'analyse critique où l'élève doit *démanteler l'hallucination*, identifier les sources manquantes, ou repérer les arguments fallacieux. Cela transforme la simple vérification factuelle en une véritable compétence citoyenne face à l'information numérique.</p>
-                    </div>
-                </div>
-            </div>
-
-            <button class="action-btn" onclick="goToSection(3)">Continuer vers les scénarios d'usage (QCM) 🚀</button>
+        <div class="flex justify-between mt-8 pt-4 border-t border-emerald-200">
+          <button id="prev-btn" onclick="prevActivity()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2 rounded-full transition duration-150 disabled:opacity-50" disabled>⬅️ Précédent</button>
+          <button id="next-btn" onclick="nextActivity()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-full transition duration-150 disabled:opacity-50">Suivant ➡️</button>
         </div>
 
-        <!-- PARTIE 3 : QCM -->
-        <div class="section" id="section3">
-            <h2>Partie 3 : Évaluation des scénarios d'usage (QCM)</h2>
-            <div class="instruction">
-                <strong>Consigne :</strong> Pour chaque cas, choisissez la pratique qui correspond le mieux à l'enrichissement pédagogique et à l'usage éthique de l'IA.
-            </div>
+        <div id="progress-bar" class="w-full bg-gray-300 h-3 rounded-full mt-6 overflow-hidden">
+          <div id="progress-fill" class="bg-emerald-600 h-3 rounded-full transition-all duration-300 ease-out" style="width:0%"></div>
+        </div>
+      </div>
+    </section>
 
-            <div class="qcm-container">
-                <!-- Cas 1 : Gestion de la charge de correction -->
-                <div class="case-study">
-                    <div class="case-scenario">
-                        <strong>📝 Cas 1 : Gestion de la charge de correction</strong>
-                        <div class="qcm-question">
-                            Un enseignant souhaite gagner du temps sur la correction de 40 dissertations. Quelle utilisation de l'IA optimise son temps tout en maximisant l'impact pédagogique ?
-                        </div>
-                    </div>
-                    <div class="qcm-options" id="qcm-options-1">
-                        <label>
-                            <input type="radio" name="qcm1" value="A">
-                            <span data-letter="A">Demander à l'IA de noter directement les copies et fournir la moyenne.</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm1" value="B">
-                            <span data-letter="B">Utiliser l'IA pour générer des pistes d'amélioration basées sur le barème (sans la note finale).</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm1" value="C">
-                            <span data-letter="C">Analyser les copies pour identifier les 3 erreurs récurrentes du groupe et créer une séance de remédiation ciblée.</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm1" value="D">
-                            <span data-letter="D">Recopier les commentaires de l'IA (y compris les noms d'élèves) sans adaptation.</span>
-                        </label>
-                    </div>
-                    <button class="validate-btn" onclick="submitQCM(1)">Valider ma réponse</button>
-                    <div class="feedback-area" id="feedback-1"></div>
-                </div>
-
-                <!-- Cas 2 : L'agentivité de l'élève -->
-                <div class="case-study">
-                    <div class="case-scenario">
-                        <strong>🗣️ Cas 2 : L'agentivité de l'élève réfractaire à l'écrit</strong>
-                        <div class="qcm-question">
-                            Un élève refuse d'écrire de longs textes, mais est très à l'aise à l'oral. Comment l'IA peut-elle l'aider à surmonter ce blocage et à rendre son devoir ?
-                        </div>
-                    </div>
-                    <div class="qcm-options" id="qcm-options-2">
-                        <label>
-                            <input type="radio" name="qcm2" value="A">
-                            <span data-letter="A">Lui demander de dicter son texte à l'IA pour qu'elle le reformule, puis valider le travail sans relecture.</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm2" value="B">
-                            <span data-letter="B">L'autoriser à répondre uniquement à l'oral, sans intervention d'outils.</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm2" value="C">
-                            <span data-letter="C">Utiliser l'IA pour transcrire son explication orale, puis lui demander de corriger et affiner la structure du texte généré.</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm2" value="D">
-                            <span data-letter="D">Lui proposer de créer une vidéo animée de 30 secondes pour remplacer le travail écrit.</span>
-                        </label>
-                    </div>
-                    <button class="validate-btn" onclick="submitQCM(2)">Valider ma réponse</button>
-                    <div class="feedback-area" id="feedback-2"></div>
-                </div>
-
-                <!-- Cas 3 : Développement de la pensée critique -->
-                <div class="case-study">
-                    <div class="case-scenario">
-                        <strong>💡 Cas 3 : Développement de la pensée critique</strong>
-                        <div class="qcm-question">
-                            L'enseignant distribue à la classe un texte sur le rôle de la photosynthèse, généré par une IA généraliste. Quel objectif pédagogique est le plus pertinent ?
-                        </div>
-                    </div>
-                    <div class="qcm-options" id="qcm-options-3">
-                        <label>
-                            <input type="radio" name="qcm3" value="A">
-                            <span data-letter="A">L'utiliser comme document de cours standard, car il est bien rédigé.</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm3" value="B">
-                            <span data-letter="B">Demander aux élèves de l'annoter pour identifier les arguments solides et les phrases à reformuler.</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm3" value="C">
-                            <span data-letter="C">Demander aux élèves de trouver et d'intégrer trois sources universitaires pour vérifier les informations et améliorer le texte.</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm3" value="D">
-                            <span data-letter="D">Le donner à lire et à résumer pour vérifier leur compréhension générale du sujet.</span>
-                        </label>
-                    </div>
-                    <button class="validate-btn" onclick="submitQCM(3)">Valider ma réponse</button>
-                    <div class="feedback-area" id="feedback-3"></div>
-                </div>
-
-                <!-- Cas 4 : Éthique et confidentialité (RGPD) -->
-                <div class="case-study">
-                    <div class="case-scenario">
-                        <strong>🛡️ Cas 4 : Éthique et confidentialité (RGPD)</strong>
-                        <div class="qcm-question">
-                            Un enseignant utilise un LLM pour analyser les devoirs d'une classe et identifier les besoins individuels. Quelle est la précaution ÉTHIQUE et LÉGALE indispensable ?
-                        </div>
-                    </div>
-                    <div class="qcm-options" id="qcm-options-4">
-                        <label>
-                            <input type="radio" name="qcm4" value="A">
-                            <span data-letter="A">Utiliser un outil payant qui garantit une meilleure protection des données.</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm4" value="B">
-                            <span data-letter="B">Anonymiser complètement les copies et ne jamais inclure de données personnelles dans le prompt.</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm4" value="C">
-                            <span data-letter="C">Demander l'autorisation des élèves (ou de leurs parents) après avoir généré le rapport.</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="qcm4" value="D">
-                            <span data-letter="D">Se contenter de supprimer le prompt et les copies du chat après l'analyse.</span>
-                        </label>
-                    </div>
-                    <button class="validate-btn" onclick="submitQCM(4)">Valider ma réponse</button>
-                    <div class="feedback-area" id="feedback-4"></div>
-                </div>
-            </div>
-            <button class="action-btn" onclick="goToSection(4)">Passer au dilemme éthique ⚖️</button>
+    <!-- ==================== PARTIE 2 : AXES PÉDAGOGIQUES ==================== -->
+    <section id="partie2" class="bg-white p-8 rounded-2xl shadow-xl">
+      <h2 class="text-2xl font-bold text-emerald-700 mb-8">🧭 Partie 2 — Les 5 axes de la transformation pédagogique</h2>
+      <div class="space-y-4">
+        <!-- Axe 1 -->
+        <div class="bg-emerald-50 rounded-xl p-4 cursor-pointer hover:bg-emerald-100 transition duration-200 ease-in-out shadow-md" onclick="toggleAxe(1)">
+          <h3 class="flex items-center gap-3 text-blue-600 font-bold"><span class="bg-blue-600 text-white w-8 h-8 flex items-center justify-center rounded-full text-md font-extrabold shadow-md">1</span> 👤 Agentivité et autonomie</h3>
+          <div id="axe1" class="hidden mt-3 text-gray-700 border-t border-emerald-200 pt-3">
+            L’IA aide l’élève à poser des questions, reformuler et comprendre selon ses besoins, renforçant sa **métacognition**. Elle sert de tuteur personnalisé qui s'adapte au rythme de l'apprenant.
+          </div>
         </div>
 
-        <!-- PARTIE 4 : DILEMME ÉTHIQUE -->
-        <div class="section" id="section4">
-            <h2>Partie 4 : Le Grand dilemme (Vrai, Faux, Nuance)</h2>
-            <div class="instruction">
-                <strong>Consigne :</strong> Réagissez à la déclaration ci-dessous en choisissant l'option qui correspond le mieux à votre position pédagogique.
-            </div>
-            <div class="dilemme-container">
-                <div class="declaration">
-                    "L'IA générative rend obsolète l'apprentissage des connaissances factuelles, car l'élève a toujours accès à l'information instantanément."
-                </div>
-                <div class="boutons">
-                    <button class="btn-dilemme btn-oui" data-choice="oui">Oui, c'est mon avis.</button>
-                    <button class="btn-dilemme btn-non" data-choice="non">Non, ce n'est pas mon avis.</button>
-                    <button class="btn-dilemme btn-nuance" data-choice="nuance">Je nuance fortement.</button>
-                </div>
-                <div class="feedback-dilemme" id="dilemme-feedback"></div>
-            </div>
-            <button class="action-btn" onclick="showFinalMessage()">Terminer la formation 🎉</button>
+        <!-- Axe 2 -->
+        <div class="bg-emerald-50 rounded-xl p-4 cursor-pointer hover:bg-emerald-100 transition duration-200 ease-in-out shadow-md" onclick="toggleAxe(2)">
+          <h3 class="flex items-center gap-3 text-green-700 font-bold"><span class="bg-green-700 text-white w-8 h-8 flex items-center justify-center rounded-full text-md font-extrabold shadow-md">2</span> 📊 Différenciation pédagogique</h3>
+          <div id="axe2" class="hidden mt-3 text-gray-700 border-t border-emerald-200 pt-3">
+            L’IA permet de générer rapidement des supports adaptés aux différents niveaux (simplification, complexification, ajout d'exemples), favorisant l’**équité d’apprentissage** et le travail en ateliers.
+          </div>
         </div>
+
+        <!-- Axe 3 -->
+        <div class="bg-emerald-50 rounded-xl p-4 cursor-pointer hover:bg-emerald-100 transition duration-200 ease-in-out shadow-md" onclick="toggleAxe(3)">
+          <h3 class="flex items-center gap-3 text-orange-600 font-bold"><span class="bg-orange-500 text-white w-8 h-8 flex items-center justify-center rounded-full text-md font-extrabold shadow-md">3</span> 💡 Créativité et innovation</h3>
+          <div id="axe3" class="hidden mt-3 text-gray-700 border-t border-emerald-200 pt-3">
+            L’IA sert de tremplin créatif : elle aide à concevoir des scénarios, des jeux de rôle, des exercices de *prompting* ou des projets interdisciplinaires. Elle est un **partenaire de brainstorming**.
+          </div>
+        </div>
+
+        <!-- Axe 4 -->
+        <div class="bg-emerald-50 rounded-xl p-4 cursor-pointer hover:bg-emerald-100 transition duration-200 ease-in-out shadow-md" onclick="toggleAxe(4)">
+          <h3 class="flex items-center gap-3 text-purple-700 font-bold"><span class="bg-purple-600 text-white w-8 h-8 flex items-center justify-center rounded-full text-md font-extrabold shadow-md">4</span> ⏳ Allègement de la charge mentale</h3>
+          <div id="axe4" class="hidden mt-3 text-gray-700 border-t border-emerald-200 pt-3">
+            L’IA automatise les tâches répétitives (rédaction d'objectifs, mails aux parents, trames de séance, création d'exercices) pour **libérer du temps d’enseignement** pour l'accompagnement des élèves.
+          </div>
+        </div>
+
+        <!-- Axe 5 -->
+        <div class="bg-emerald-50 rounded-xl p-4 cursor-pointer hover:bg-emerald-100 transition duration-200 ease-in-out shadow-md" onclick="toggleAxe(5)">
+          <h3 class="flex items-center gap-3 text-red-700 font-bold"><span class="bg-red-600 text-white w-8 h-8 flex items-center justify-center rounded-full text-md font-extrabold shadow-md">5</span> 🧐 Pensée critique</h3>
+          <div id="axe5" class="hidden mt-3 text-gray-700 border-t border-emerald-200 pt-3">
+            L’IA est un excellent support pour exercer la **vérification**, l’analyse et le doute raisonné sur les contenus produits. Elle permet de confronter le savoir généré avec le savoir scientifique ou factuel.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PARTIE 3 : QCM INTERACTIFS ==================== -->
+    <section id="partie3" class="bg-white p-8 rounded-2xl shadow-xl">
+      <h2 class="text-2xl font-bold text-emerald-700 mb-4">🚀 Partie 3 — QCM Interactifs : Bonne pratiques et éthique</h2>
+      <div id="qcm-container" class="space-y-6"></div>
+    </section>
+
+    <!-- ==================== PARTIE 4 : DILEMMES ÉTHIQUES ==================== -->
+    <section id="partie4" class="bg-white p-8 rounded-2xl shadow-xl">
+      <h2 class="text-2xl font-bold text-emerald-700 mb-4">⚖️ Partie 4 — Dilemmes Éthiques : Votre positionnement</h2>
+      <p class="italic mb-6 text-gray-600">
+        Cliquez sur la réponse qui correspond le mieux à votre conviction.
+      </p>
+      <div id="dilemma-container" class="grid md:grid-cols-2 gap-6"></div>
+    </section>
+  </main>
+
+  <footer class="text-center text-white py-6 bg-emerald-900 text-sm">
+    © 2025 — Formation “IA et Pédagogie” | Développé avec l'aide de Google Gemini
+  </footer>
+
+  <!-- ==================== SCRIPT ==================== -->
+  <script>
+    /* ---------- PARTIE 1 : LOGIQUE D'ASSOCIATION ---------- */
+    const activities = [
+      { question: "Créer un QCM exportable depuis une simple liste de questions.", tool: "Quiz Wizard", advice: "Vérifier les questions et les réponses avant diffusion (erreurs possibles).", isCorrect: false },
+      { question: "Préparer une évaluation complète à partir d’un PDF de cours volumineux.", tool: "ChatGPT / Gemini / Mistral / Claude", advice: "Donner un prompt précis et vérifier l’alignement avec votre cours.", isCorrect: false },
+      { question: "Proposer plusieurs versions d’un exercice pour des élèves ayant des difficultés différentes.", tool: "ChatGPT / Gemini / Mistral / Claude", advice: "S’assurer que chaque version garde le même niveau et les mêmes objectifs.", isCorrect: false },
+      { question: "Adapter un document initial dans différents styles d'écriture (ex: formel vers informel ou humoristique).", tool: "Claude", advice: "Veiller à ce que le fond reste correct ; seul le ton doit changer.", isCorrect: false },
+      { question: "Réaliser rapidement la présentation visuelle (diapositives) d’un cours à partir de notes brutes.", tool: "Gamma / Canva", advice: "Vérifier la cohérence visuelle et l’exactitude du contenu.", isCorrect: false },
+      { question: "Réaliser un résumé audio/vidéo d’un PDF ou d'une page web pour un élève ayant des troubles DYS.", tool: "NotebookLM", advice: "S’assurer que le résultat reflète bien le contenu du document.", isCorrect: false },
+      { question: "Rédiger des commentaires individualisés pour 30 copies à partir de mots-clés de notation.", tool: "ChatGPT / Gemini / Mistral / Claude", advice: "Ne pas utiliser de données personnelles d’élèves (RGPD).", isCorrect: false },
+      { question: "Produire des feedbacks formatifs immédiats et constructifs sur une phrase ou un paragraphe rédigé par un élève.", tool: "ChatGPT / Gemini / Mistral / Claude", advice: "Relire pour éviter des formulations trop vagues ou trop flatteuses.", isCorrect: false },
+      { question: "Construire une progression complète de séquence ou le plan d'un nouveau module de cours.", tool: "ChatGPT / Gemini / Mistral / Claude", advice: "Préciser clairement objectifs, niveau et compétences attendues.", isCorrect: false },
+      { question: "Recherches d’informations documentées avec vérification des sources en temps réel.", tool: "Perplexity", advice: "Vérifier les sources citées avant d’utiliser les informations.", isCorrect: false },
+      { question: "Créer des énigmes pédagogiques originales et un scénario d'apprentissage basé sur le jeu (gamification).", tool: "ChatGPT / Gemini / Mistral / Claude", advice: "Adapter le niveau et vérifier la cohérence des consignes et indices.", isCorrect: false }
+    ];
+
+    // Extraction et tri des options pour éviter les doublons dans les listes déroulantes
+    const tools = [...new Set(activities.map(a => a.tool))].sort();
+    const advices = [...new Set(activities.map(a => a.advice))].sort();
+
+    let currentActivity = 0;
+    const toolSelect = document.getElementById("select-tool");
+    const adviceSelect = document.getElementById("select-warning");
+    const title = document.getElementById("activity-title");
+    const question = document.getElementById("activity-question");
+    const feedback = document.getElementById("activity-feedback");
+    const prevBtn = document.getElementById("prev-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const progress = document.getElementById("progress-fill");
+    const validateBtn = document.getElementById("validate-btn"); // Récupération du bouton de validation
+
+    // Remplissage des Selects
+    tools.forEach(t => {
+      const opt = document.createElement("option");
+      opt.value = t; opt.textContent = t; toolSelect.appendChild(opt);
+    });
+    advices.forEach(a => {
+      const opt = document.createElement("option");
+      opt.value = a; opt.textContent = a; adviceSelect.appendChild(opt);
+    });
+
+    function loadActivity(i){
+      const act = activities[i];
+      // Mettre à jour l'interface
+      title.textContent = `Activité ${i+1} / ${activities.length}`;
+      question.textContent = act.question;
+      toolSelect.value = ""; adviceSelect.value = ""; 
+      feedback.textContent = "";
+      feedback.className = "mt-4 p-2 rounded-lg"; // Réinitialiser le style
+
+      const isCompleted = act.isCorrect;
+      toolSelect.disabled = isCompleted;
+      adviceSelect.disabled = isCompleted;
+      validateBtn.disabled = isCompleted;
+      validateBtn.textContent = isCompleted ? "Association réussie ✅" : "Valider l'association";
+      validateBtn.classList.toggle('opacity-50', isCompleted);
+      
+      if (isCompleted) {
+        feedback.textContent = `✅ Association déjà validée : Outil (${act.tool}) | Recommandation (${act.advice}).`;
+        feedback.className = "mt-4 p-2 rounded-lg text-green-700 bg-green-100 font-bold fade-in";
+      }
+
+      // Gestion des boutons de navigation et de la barre de progression
+      prevBtn.disabled = (i === 0);
+      nextBtn.disabled = (i === activities.length - 1);
+      nextBtn.textContent = (i === activities.length - 1) ? "Fin" : "Suivant ➡️";
+      progress.style.width = ((i + 1) / activities.length * 100) + "%";
+      
+      // Assurer un focus accessible
+      document.getElementById("activity-container").focus();
+    }
+
+    function validateActivity(){
+      const chosenTool = toolSelect.value;
+      const chosenAdvice = adviceSelect.value;
+      const act = activities[currentActivity];
+      
+      if(!chosenTool || !chosenAdvice){
+        feedback.textContent = "⚠️ Veuillez sélectionner l'outil IA et la recommandation essentielle.";
+        feedback.className = "mt-4 p-2 rounded-lg text-red-700 bg-red-100 font-semibold fade-in";
+        return;
+      }
+      
+      if(chosenTool === act.tool && chosenAdvice === act.advice){
+        // Succès
+        act.isCorrect = true; // Marquer comme correct
+        feedback.textContent = "✅ Bravo ! Vous avez trouvé la bonne association. C'est un usage responsable.";
+        feedback.className = "mt-4 p-2 rounded-lg text-green-700 bg-green-100 font-bold fade-in";
         
-    </div>
-
-    <script>
-        // --- Navigation entre les sections ---
-        function goToSection(sectionNumber) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(`section${sectionNumber}`).classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // --- PARTIE 1 : LOGIQUE DU JEU D'ASSOCIATION ---
+        // Désactiver les inputs et le bouton sur succès
+        toolSelect.disabled = true;
+        adviceSelect.disabled = true;
+        validateBtn.disabled = true;
+        validateBtn.textContent = "Association réussie ✅";
+        validateBtn.classList.add('opacity-50');
         
-        // MAPPING DES RÉPONSES CORRECTES
-        const CORRECT_ASSOCIATIONS = {
-            "qcm": { tool: "quizwizard", precaution: "verif_fact_pertinence", completed: false },
-            "questions": { tool: "chatgpt", precaution: "intention_pedagogique", completed: false },
-            "versions": { tool: "chatgpt", precaution: "renseignement_contexte", completed: false },
-            "bilan": { tool: "notebooklm", precaution: "intention_pedagogique_surcharge", completed: false },
-            "adapter": { tool: "chatgpt", precaution: "intention_pedagogique_ton", completed: false },
-            "presentation": { tool: "gamma", precaution: "verif_fact_esprit_critique", completed: false },
-            "resume": { tool: "canva", precaution: "verif_fact_esprit_critique", completed: false },
-            "commentaires": { tool: "chatgpt", precaution: "confidentialite_feedback", completed: false },
-            "feedbacks": { tool: "chatgpt", precaution: "confidentialite_feedback", completed: false },
-            "progression": { tool: "chatgpt", precaution: "renseignement_contexte", completed: false },
-            "recherche": { tool: "perplexity", precaution: "verif_fact_esprit_critique", completed: false },
-            "enigmes": { tool: "chatgpt", precaution: "intention_pedagogique", completed: false }
-        };
+      } else {
+        // Échec - Feedback détaillé
+        let message = "❌ Association incorrecte. ";
         
-        let selectedTask = null;
-        let droppedTool = null;
-        let droppedPrecaution = null;
-        let completedCount = 0;
-        const totalTasks = Object.keys(CORRECT_ASSOCIATIONS).length;
-
-        // Fonction pour afficher la modale
-        function showModal(title, message) {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalMessage').innerHTML = message;
-            document.getElementById('customModal').classList.add('show');
+        // Vérification de l'outil
+        if (chosenTool === act.tool) {
+            message += `<span class='correct-part'>L'outil IA est correct (${chosenTool}) !</span> `;
+        } else {
+            message += `L'outil **${chosenTool || 'non sélectionné'}** n'est pas le plus pertinent ici. `;
         }
 
-        // Initialisation et gestion des événements
-        document.addEventListener('DOMContentLoaded', () => {
-            const taskList = document.getElementById('taskList');
-            const toolSlot = document.getElementById('toolSlot');
-            const precautionSlot = document.getElementById('precautionSlot');
-            const btnValidate = document.getElementById('btnValidate');
-            const btnReset = document.getElementById('btnReset');
-            const btnCloseModal = document.getElementById('btnCloseModal');
-            
-            // Événement : Sélection de tâche
-            taskList.addEventListener('click', (e) => {
-                const taskCard = e.target.closest('.card.task:not(.completed)');
-                if (taskCard) {
-                    // Désélectionner l'ancienne tâche
-                    document.querySelectorAll('.card.task.selected').forEach(card => card.classList.remove('selected'));
-                    
-                    // Sélectionner la nouvelle tâche
-                    selectedTask = taskCard.dataset.id;
-                    taskCard.classList.add('selected');
-                    updateValidationButton();
-                }
-            });
-
-            // Événement : Fermer la modale
-            btnCloseModal.addEventListener('click', () => {
-                document.getElementById('customModal').classList.remove('show');
-            });
-            
-            // Événements Drag and Drop
-            setupDragAndDrop();
-
-            // Événement : Validation
-            btnValidate.addEventListener('click', validateAssociation);
-
-            // Événement : Réinitialisation
-            btnReset.addEventListener('click', resetSelection);
-
-            // Initialisation de la progression
-            updateProgressBar();
-
-            // Initialisation de la partie 4 (Dilemme)
-            setupDilemmeListeners();
-        });
-        
-        function setupDragAndDrop() {
-            const draggableItems = document.querySelectorAll('.source-area .card');
-            const dropSlots = document.querySelectorAll('.drop-slot');
-            
-            draggableItems.forEach(item => {
-                item.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', e.target.dataset.id);
-                    e.dataTransfer.effectAllowed = 'move';
-                });
-            });
-
-            dropSlots.forEach(slot => {
-                slot.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    e.target.closest('.drop-slot').classList.add('drag-over');
-                });
-
-                slot.addEventListener('dragleave', (e) => {
-                    e.target.closest('.drop-slot').classList.remove('drag-over');
-                });
-
-                slot.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    const slotElement = e.target.closest('.drop-slot');
-                    slotElement.classList.remove('drag-over');
-                    
-                    const draggedId = e.dataTransfer.getData('text/plain');
-                    const draggedElement = document.querySelector(`[data-id="${draggedId}"]`);
-                    
-                    if (draggedElement && draggedElement.closest('.source-area')) {
-                        // Supprimer la carte précédemment déposée
-                        clearSlot(slotElement);
-
-                        // Mettre à jour l'état de l'élément source
-                        draggedElement.style.opacity = '0.01'; // Le "masquer" de la source
-                        draggedElement.draggable = false;
-                        
-                        // Créer une copie à déposer
-                        const droppedCard = draggedElement.cloneNode(true);
-                        droppedCard.draggable = false;
-                        droppedCard.classList.add('dropped-card');
-                        droppedCard.style.opacity = '1';
-                        droppedCard.style.position = 'static';
-                        droppedCard.style.margin = '0';
-
-                        // Déposer la carte
-                        slotElement.innerHTML = ''; // Nettoyer l'étiquette de slot
-                        slotElement.appendChild(droppedCard);
-                        slotElement.classList.add('filled');
-                        
-                        if (slotElement.id === 'toolSlot') {
-                            droppedTool = draggedId;
-                        } else if (slotElement.id === 'precautionSlot') {
-                            droppedPrecaution = draggedId;
-                        }
-
-                        updateValidationButton();
-                    }
-                });
-            });
-        }
-        
-        function clearSlot(slotElement) {
-            const droppedContent = slotElement.querySelector('.dropped-card');
-            if (droppedContent) {
-                const originalId = droppedContent.dataset.id;
-                const originalCard = document.querySelector(`.source-area .card[data-id="${originalId}"]`);
-                if (originalCard) {
-                    // Restaurer la carte source
-                    originalCard.style.opacity = '1';
-                    originalCard.draggable = true;
-                }
-            }
-            slotElement.innerHTML = `<span class="slot-label">Déposez l'${slotElement.id === 'toolSlot' ? 'Outil' : 'Précaution'} ici</span>`;
-            slotElement.classList.remove('filled');
-            
-            if (slotElement.id === 'toolSlot') {
-                droppedTool = null;
-            } else if (slotElement.id === 'precautionSlot') {
-                droppedPrecaution = null;
-            }
+        // Vérification de la recommandation
+        if (chosenAdvice === act.advice) {
+            message += `<span class='correct-part'>La recommandation essentielle est correcte ! (${chosenAdvice})</span>`;
+        } else {
+            message += `La recommandation **${chosenAdvice || 'non sélectionnée'}** doit être révisée.`;
         }
 
-        function resetSelection() {
-            // Désélectionner la tâche
-            document.querySelectorAll('.card.task.selected').forEach(card => card.classList.remove('selected'));
-            selectedTask = null;
+        // Utiliser innerHTML pour permettre le style dynamique
+        feedback.innerHTML = message;
+        feedback.className = "mt-4 p-2 rounded-lg text-red-700 bg-red-100 font-bold fade-in";
+      }
+    }
 
-            // Vider les slots
-            clearSlot(document.getElementById('toolSlot'));
-            clearSlot(document.getElementById('precautionSlot'));
-            
-            updateValidationButton();
+    function nextActivity(){ 
+      if(currentActivity < activities.length - 1){ 
+        currentActivity++; 
+        loadActivity(currentActivity); 
+      }
+    }
+
+    function prevActivity(){ 
+      if(currentActivity > 0){ 
+        currentActivity--; 
+        loadActivity(currentActivity); 
+      }
+    }
+    
+    // Initialisation
+    loadActivity(0);
+
+    /* ---------- PARTIE 2 : LOGIQUE ACCORDEON ---------- */
+    function toggleAxe(num){ 
+        const element = document.getElementById("axe" + num);
+        element.classList.toggle("hidden"); 
+    }
+
+    /* ---------- PARTIE 3 : LOGIQUE QCM ---------- */
+    const qcmData = [
+      {
+        q: "Un enseignant veut corriger 40 dissertations avec l’IA. Quelle pratique est éthique ?",
+        options: {
+          A: "Laisser l’IA corriger et noter automatiquement toutes les copies.",
+          B: "Faire corriger par l’IA puis copier-coller les retours, sans vérification.",
+          C: "Utiliser l’IA pour générer des pistes de commentaires, puis **relire, ajuster et personnaliser**.",
+          D: "Refuser tout usage de l’IA pour corriger."
+        },
+        a: "C"
+      },
+      {
+        q: "Un élève préfère l’oral, mais doit s'améliorer en expression. Comment l’aider avec l’IA ?",
+        options: {
+          A: "Lui demander de taper ses réponses pour que l’IA les corrige.",
+          B: "Interdire l’usage de l’IA pour l’oral, car c'est de la triche.",
+          C: "Utiliser un **assistant vocal IA pour qu’il s’entraîne à parler et s’auto-évaluer** sur la fluidité et le vocabulaire.",
+          D: "Faire rédiger ses réponses par l’IA pour gagner du temps."
+        },
+        a: "C"
+      },
+      {
+        q: "L'IA génère un texte sur la photosynthèse. Quel usage pédagogique est le plus formateur pour l'élève ?",
+        options: {
+          A: "Le copier directement dans le cahier de l’élève pour gagner du temps.",
+          B: "Le présenter comme une vérité absolue et incontestable.",
+          C: "S’en servir comme **base de discussion critique** et d'exercice de reformulation/synthèse.",
+          D: "Le rejeter sans lecture car il est forcément faux ou trop général."
+        },
+        a: "C"
+      },
+      {
+        q: "Analyse de copies d'élèves via IA : quelle précaution RGPD essentielle ?",
+        options: {
+          A: "Partager les copies des élèves avec un outil public sans anonymisation.",
+          B: "**Anonymiser les données** (noms, prénoms) avant tout traitement par l’IA.",
+          C: "Demander à l’IA de stocker les copies pour analyse future.",
+          D: "Ne rien faire de particulier, l'IA est responsable du traitement des données."
+        },
+        a: "B"
+      },
+      {
+        q: "L'IA est utilisée pour une recherche documentaire. Quelle est la bonne pratique à enseigner aux élèves ?",
+        options: {
+          A: "Copier sans citer la source, car c'est l'IA qui l'a trouvée.",
+          B: "Faire confiance à la première réponse de l’IA sans vérifier.",
+          C: "**Vérifier et croiser les sources** citées par l'IA avant utilisation.",
+          D: "Laisser l’IA rédiger la bibliographie sans contrôle."
+        },
+        a: "C"
+      }
+    ];
+
+    const qcmContainer = document.getElementById("qcm-container");
+    qcmData.forEach((d,i)=>{
+      // Création de la structure du QCM
+      const qcmItem = document.createElement('div');
+      qcmItem.className = "p-5 border border-emerald-200 rounded-xl shadow-md bg-white hover:bg-emerald-50 transition";
+      
+      let optionsHtml = '';
+      for (const key in d.options) {
+        optionsHtml += `<label class="flex items-center text-gray-700">
+                          <input type="radio" name="q${i}" value="${key}" class="mr-3"> 
+                          ${key} — ${d.options[key]}
+                        </label>`;
+      }
+      
+      qcmItem.innerHTML = `
+        <h3 class="font-bold text-lg text-gray-800 mb-3">${i+1}. ${d.q}</h3>
+        <div class="space-y-1 mb-4">
+          ${optionsHtml}
+        </div>
+        <button onclick="checkQ(${i},'${d.a}')" class="mt-2 
+          bg-emerald-600 text-white px-5 py-2 rounded-full hover:bg-emerald-700 transition duration-150 font-medium shadow-sm">Valider ma réponse</button>
+        <p id="fb${i}" class="mt-3 text-sm font-semibold p-2 rounded-lg"></p>
+      `;
+      qcmContainer.appendChild(qcmItem);
+    });
+
+    function checkQ(id,correct){
+      const c=document.querySelector(`input[name='q${id}']:checked`);
+      const fb=document.getElementById(`fb${id}`);
+      const validateButton = fb.previousElementSibling;
+      
+      // Réinitialiser le style de feedback
+      fb.textContent = "";
+      fb.className = "mt-3 text-sm font-semibold p-2 rounded-lg";
+      
+      if(!c){
+        fb.textContent="⚠️ Choisissez une réponse avant de valider.";
+        fb.className="mt-3 p-2 rounded-lg text-red-700 bg-red-100 font-semibold fade-in";
+        return;
+      }
+      
+      // Désactiver les options après la première tentative pour cette question
+      document.querySelectorAll(`input[name='q${id}']`).forEach(radio => radio.disabled = true);
+      validateButton.disabled = true;
+      validateButton.classList.add('opacity-50');
+
+      if(c.value === correct) {
+        fb.textContent = "✅ Bonne réponse ! Ceci correspond à un usage éthique et pédagogique de l'IA.";
+        fb.className = "mt-3 p-2 rounded-lg text-green-700 bg-green-100 font-bold fade-in";
+      } else {
+        fb.textContent = `❌ Mauvais choix. La bonne réponse était ${correct}. Relisez la consigne et pensez à l’éthique de l’usage.`;
+        fb.className = "mt-3 p-2 rounded-lg text-red-700 bg-red-100 font-bold fade-in";
+      }
+    }
+
+    /* ---------- PARTIE 4 : LOGIQUE DILEMMES ÉTHIQUES ---------- */
+    const dilemmas = [
+      "L’IA rend-elle les connaissances obsolètes et l'effort d'apprentissage inutile ?",
+      "Un élève peut-il rendre un devoir entièrement généré par IA si l'objectif était la créativité ?",
+      "L’IA stimule-t-elle la créativité ou ne fait-elle qu'imiter l'existant ?",
+      "Peut-on confier la correction et l'évaluation finale d'un travail à l’IA sans intervention humaine ?",
+      "L’anonymisation des copies suffit-elle à protéger les données personnelles des élèves (RGPD) ?",
+      "L’IA aide-t-elle les élèves timides ou éloignés à participer en classe ?",
+      "L’IA rend-elle la différenciation plus équitable ou creuse-t-elle les inégalités d'accès aux outils ?",
+      "Créer une image ou un texte avec l’IA, est-ce de l’art ou juste de la manipulation d'informations existantes ?",
+      "Utiliser l’IA pour reformuler un paragraphe sans citer la source initiale, est-ce du plagiat ?",
+      "L’accès à l'IA creuse-t-il les inégalités sociales entre les élèves ?"
+    ];
+
+    const dilemmaContainer = document.getElementById("dilemma-container");
+    dilemmas.forEach((d,i)=>{
+      dilemmaContainer.innerHTML += `
+        <div class="p-5 border border-emerald-300 rounded-xl bg-emerald-50 transition shadow-md">
+          <h3 class="font-bold text-gray-800 mb-3">D${i+1} — ${d}</h3>
+          <div class="flex gap-3 mt-4">
+            <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-semibold shadow-md transition transform hover:scale-[1.03]" onclick="showD(${i},'oui')">Oui</button>
+            <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full font-semibold shadow-md transition transform hover:scale-[1.03]" onclick="showD(${i},'non')">Non</button>
+            <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-full font-semibold shadow-md transition transform hover:scale-[1.03]" onclick="showD(${i},'nuance')">Nuance</button>
+          </div>
+          <p id="d${i}" class="mt-3 p-2 rounded-lg text-sm italic font-medium fade-in"></p>
+        </div>`;
+    });
+
+    function showD(i,rep){
+      const fb=document.getElementById("d"+i);
+      // Réponses mises à jour pour être plus tranchées
+      const answers={
+        oui:{
+            text:"⚠️ **Prudence ou Faux :** La réponse est généralement 'non' car cela pose un problème éthique ou contrevient aux bonnes pratiques. L'encadrement par l'enseignant est obligatoire.",
+            class:"text-orange-800 bg-orange-100"
+        },
+        non:{
+            text:"✅ **Correct :** Si l'IA est utilisée comme un simple outil et que les règles de vérification et d'éthique sont respectées, l'impact négatif est faible ou inexistant.",
+            class:"text-green-700 bg-green-100"
+        },
+        nuance:{
+            text:"🎯 **Le Choix Pédagogique :** C'est souvent la réponse la plus juste ! L'impact réel dépend toujours de la manière dont l'enseignant intègre l'IA (le contexte, l'objectif et la médiation sont clés).",
+            class:"text-amber-700 bg-yellow-100"
         }
+      };
+      
+      fb.innerHTML = answers[rep].text; // Utilisation de innerHTML si le HTML est injecté dans le texte (mais ici non, c'est juste du texte)
+      fb.className=`mt-3 p-2 rounded-lg text-sm font-semibold fade-in ${answers[rep].class}`;
+    }
+  </script>
 
-        function updateValidationButton() {
-            const isValid = selectedTask !== null && droppedTool !== null && droppedPrecaution !== null;
-            document.getElementById('btnValidate').disabled = !isValid;
-        }
-
-        function updateProgressBar() {
-            const percent = (completedCount / totalTasks) * 100;
-            document.getElementById('progressBar').style.width = `${percent}%`;
-        }
-
-        function validateAssociation() {
-            if (!selectedTask || !droppedTool || !droppedPrecaution) {
-                showModal("Erreur de validation", "Veuillez sélectionner une tâche, un outil et une précaution avant de valider.");
-                return;
-            }
-
-            const correct = CORRECT_ASSOCIATIONS[selectedTask];
-            
-            if (correct.completed) {
-                showModal("Tâche déjà validée", "Cette tâche a déjà été complétée. Veuillez choisir une autre tâche.");
-                return;
-            }
-
-            const isToolCorrect = droppedTool === correct.tool;
-            const isPrecautionCorrect = droppedPrecaution === correct.precaution;
-
-            if (isToolCorrect && isPrecautionCorrect) {
-                // Succès
-                CORRECT_ASSOCIATIONS[selectedTask].completed = true;
-                completedCount++;
-                updateProgressBar();
-
-                // Marquer la tâche comme complétée
-                const taskCard = document.querySelector(`.card.task[data-id="${selectedTask}"]`);
-                taskCard.classList.remove('selected');
-                taskCard.classList.add('completed');
-
-                showModal("✅ Succès !", `<strong>Association Correcte !</strong>
-                    <p class="mt-2">Vous avez identifié le bon outil et la précaution essentielle pour cette tâche. Excellent réflexe pédagogique !</p>
-                    <p class="mt-2 text-sm italic">Progression : ${completedCount} / ${totalTasks}</p>`);
-
-                resetSelection();
-            } else {
-                // Échec
-                let message = "<strong>Association Incorrecte.</strong> Veuillez réessayer :<ul class='list-disc list-inside mt-2 mx-auto max-w-fit'>";
-                if (!isToolCorrect) {
-                    message += "<li>L'outil sélectionné n'est pas le plus adapté.</li>";
-                }
-                if (!isPrecautionCorrect) {
-                    message += "<li>La précaution choisie n'est pas la plus critique pour cette tâche.</li>";
-                }
-                message += "</ul><p class='mt-2'>Réinitialisez et tentez une autre combinaison !</p>";
-                
-                showModal("❌ Erreur", message);
-            }
-        }
-        
-        function resetAll() {
-            Object.keys(CORRECT_ASSOCIATIONS).forEach(key => {
-                CORRECT_ASSOCIATIONS[key].completed = false;
-            });
-            completedCount = 0;
-            updateProgressBar();
-            document.querySelectorAll('.card.task').forEach(card => {
-                card.classList.remove('completed', 'selected');
-            });
-            document.querySelectorAll('.source-area .card').forEach(card => {
-                card.style.opacity = '1';
-                card.draggable = true;
-            });
-            resetSelection();
-            showModal("Jeu réinitialisé", "L'exercice d'association a été entièrement réinitialisé. Recommencez à tout moment.");
-        }
-        
-        document.getElementById('btnReset').addEventListener('click', resetAll);
-
-        // --- PARTIE 2 : LOGIQUE DE L'ACCORDÉON ---
-        function toggleStep(element) {
-            // Fermer tous les autres
-            document.querySelectorAll('.schema-step').forEach(step => {
-                if (step !== element && step.classList.contains('active')) {
-                    step.classList.remove('active');
-                }
-            });
-            // Ouvrir/Fermer l'élément cliqué
-            element.classList.toggle('active');
-        }
-
-        // --- PARTIE 3 : LOGIQUE DU QCM ---
-
-        const QCM_DATA = {
-            1: { 
-                correct: "C", 
-                feedback: {
-                    A: "Attention : l'IA ne doit pas remplacer le jugement de l'enseignant. Elle est là pour l'assister, pas pour noter.",
-                    B: "C'est une bonne option, mais l'option C est meilleure car elle permet de traiter une erreur collective en une seule séance, optimisant l'impact.",
-                    C: "✅ Excellent choix ! Utiliser l'IA pour l'analyse de groupe est un gain de temps majeur qui permet de se concentrer sur la remédiation et l'accompagnement humain.",
-                    D: "Danger RGPD et manque de pertinence pédagogique. Les commentaires doivent toujours être personnalisés et validés par l'enseignant."
-                }
-            },
-            2: { 
-                correct: "C", 
-                feedback: {
-                    A: "Danger : l'élève ne développe aucune compétence rédactionnelle et ne s'approprie pas le texte.",
-                    B: "Si cela résout le blocage, c'est bien, mais l'utilisation de l'IA (option C) permet de développer la compétence écrite par la révision.",
-                    C: "✅ Excellent choix ! L'IA sert de pont : l'élève utilise son aisance orale, puis travaille son écrit en critiquant et améliorant la production de l'IA (agentivité).",
-                    D: "Ceci contourne le problème. L'objectif est de l'aider à développer la compétence requise, et non de la remplacer par un autre format qui n'est pas le but de l'évaluation."
-                }
-            },
-            3: { 
-                correct: "C", 
-                feedback: {
-                    A: "Risque majeur : l'IA peut avoir inséré des erreurs factuelles ou des raccourcis. Ce n'est pas un document de cours fiable sans vérification.",
-                    B: "C'est une bonne première étape. L'option C est cependant plus complète car elle intègre la vérification externe et l'ajout de sources fiables.",
-                    C: "✅ Excellent choix ! L'IA devient un objet d'étude. On développe la compétence critique en demandant aux élèves d'évaluer sa fiabilité et de compléter le travail avec des recherches documentées.",
-                    D: "Cela ne développe que la lecture. L'enjeu de l'IA est d'apprendre à mettre en doute le contenu."
-                }
-            },
-            4: { 
-                correct: "B", 
-                feedback: {
-                    A: "Même un outil payant n'est jamais une garantie suffisante si le prompt contient des données sensibles. La précaution doit être prise par l'utilisateur.",
-                    B: "✅ Indispensable ! La Confidentialité et le RGPD sont la priorité absolue. Aucun outil (même s'il promet de ne pas utiliser les données) ne doit recevoir d'informations qui permettraient d'identifier un élève.",
-                    C: "L'autorisation doit être demandée AVANT de traiter les données. De plus, il est souvent préférable de ne pas les utiliser du tout.",
-                    D: "Les données peuvent être conservées par le fournisseur de service IA. Le seul moyen d'être sûr est de ne pas les inclure dans le prompt initial."
-                }
-            }
-        };
-
-        function submitQCM(qcmId) {
-            const selectedOption = document.querySelector(`input[name="qcm${qcmId}"]:checked`);
-            const feedbackArea = document.getElementById(`feedback-${qcmId}`);
-            const validateBtn = feedbackArea.previousElementSibling;
-
-            if (!selectedOption) {
-                showModal("Attention", "Veuillez sélectionner une option avant de valider.");
-                return;
-            }
-
-            const choice = selectedOption.value;
-            const data = QCM_DATA[qcmId];
-            const isCorrect = choice === data.correct;
-            const feedbackText = data.feedback[choice];
-
-            // Masquer les boutons de validation et les options après la réponse
-            validateBtn.style.display = 'none';
-            document.getElementById(`qcm-options-${qcmId}`).querySelectorAll('input').forEach(input => input.disabled = true);
-            
-            // Afficher le feedback
-            feedbackArea.innerHTML = `
-                <span class="result">${isCorrect ? 'Réponse Correcte !' : 'Réponse Incorrecte.'}</span>
-                <p class="explanation">${feedbackText}</p>
-            `;
-            feedbackArea.className = `feedback-area ${isCorrect ? 'correct' : 'incorrect'}`;
-            feedbackArea.style.display = 'block';
-
-            // Si c'est correct, animer un petit scroll vers le feedback
-            if(isCorrect) {
-                setTimeout(() => {
-                    feedbackArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
-            }
-        }
-
-        // --- PARTIE 4 : LOGIQUE DU DILEMME ---
-        
-        const DILEMMA_FEEDBACK = {
-            oui: {
-                title: "❌ Réponse Binaire (Risquée)",
-                color: "#c0392b",
-                message: "Adopter cette position est risqué. Les connaissances factuelles ne sont pas obsolètes ; elles sont le préalable à la pensée critique. Sans base de connaissance, l'élève est incapable de juger de la pertinence ou de l'exactitude de la réponse de l'IA. Si vous ne savez pas que $2+2=4$, vous ne pouvez pas critiquer l'IA qui répond $5$. Le rôle de l'enseignant devient de faire acquérir ces connaissances puis de les mobiliser pour la vérification et la critique."
-            },
-            non: {
-                title: "✅ Réponse Binaire (Trop Simpliste)",
-                color: "#27ae60",
-                message: "Dire 'Non' est vrai, mais ne tient pas compte du changement de paradigme. Certes, les connaissances sont toujours essentielles, mais leur mode d'acquisition et d'évaluation évolue. L'IA a automatisé la recherche d'information, l'école doit donc se concentrer sur l'utilisation éthique et critique de cette information, plutôt que sur sa simple mémorisation."
-            },
-            nuance: {
-                title: "💡 La position Pédagogique (Recommandée)",
-                color: "#f39c12",
-                message: "Félicitations pour la nuance. L'accès à l'information de l'IA ne rend pas la connaissance obsolète, mais change la nature du travail de l'élève et de l'enseignant. L'objectif passe de <em>'savoir récupérer l'information'</em> à <em>'savoir analyser, critiquer, synthétiser et appliquer l'information'</em>. La connaissance reste la fondation pour développer l'esprit critique et la créativité."
-            }
-        };
-
-        function setupDilemmeListeners() {
-            document.querySelectorAll('.btn-dilemme').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const choice = e.target.dataset.choice;
-                    const feedbackElement = document.getElementById('dilemme-feedback');
-                    const data = DILEMMA_FEEDBACK[choice];
-
-                    // Réinitialisation
-                    feedbackElement.className = 'feedback-dilemme';
-
-                    // Application du nouveau feedback
-                    feedbackElement.classList.add(choice);
-                    feedbackElement.innerHTML = `
-                        <h4 style="color: ${data.color}">${data.title}</h4>
-                        <p>${data.message}</p>
-                    `;
-                    feedbackElement.style.display = 'block';
-                    
-                    setTimeout(() => {
-                        feedbackElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 100);
-                });
-            });
-        }
-        
-        function showFinalMessage() {
-            showModal("🎉 Félicitations, Formation Complète !", 
-                "Vous avez exploré les principaux usages, les précautions essentielles et les dilemmes éthiques de l'IA générative en éducation. <br><br>Vous êtes maintenant prêt à intégrer l'IA comme un co-pilote pédagogique au service de la réussite de vos élèves.");
-        }
-    </script>
 </body>
 </html>
+
