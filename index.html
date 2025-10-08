@@ -430,24 +430,106 @@
     }
 
     /* ---------- PARTIE 4 : LOGIQUE DILEMMES ÉTHIQUES ---------- */
+    // Nouvelle structure plus tranchée pour les dilemmes éthiques
     const dilemmas = [
-      "L’IA rend-elle les connaissances obsolètes et l'effort d'apprentissage inutile ?",
-      "Un élève peut-il rendre un devoir entièrement généré par IA si l'objectif était la créativité ?",
-      "L’IA stimule-t-elle la créativité ou ne fait-elle qu'imiter l'existant ?",
-      "Peut-on confier la correction et l'évaluation finale d'un travail à l’IA sans intervention humaine ?",
-      "L’anonymisation des copies suffit-elle à protéger les données personnelles des élèves (RGPD) ?",
-      "L’IA aide-t-elle les élèves timides ou éloignés à participer en classe ?",
-      "L’IA rend-elle la différenciation plus équitable ou creuse-t-elle les inégalités d'accès aux outils ?",
-      "Créer une image ou un texte avec l’IA, est-ce de l’art ou juste de la manipulation d'informations existantes ?",
-      "Utiliser l’IA pour reformuler un paragraphe sans citer la source initiale, est-ce du plagiat ?",
-      "L’accès à l'IA creuse-t-il les inégalités sociales entre les élèves ?"
+      {
+        question: "L’IA rend-elle les connaissances obsolètes et l'effort d'apprentissage inutile ?",
+        correct: "non",
+        feedback: {
+          oui: "❌ Mauvais raisonnement : l’IA s’appuie sur le savoir humain existant, elle ne le remplace pas. L'effort d'apprentissage critique demeure essentiel.",
+          non: "✅ Exact : les connaissances restent la base sur laquelle s’appuie toute IA. L’apprentissage du savoir critique demeure essentiel.",
+          nuance: "💡 Partiellement vrai : l’IA change la nature des compétences (on vérifie plus qu’on ne mémorise) mais ne rend pas l'effort inutile."
+        }
+      },
+      {
+        question: "Un élève peut-il rendre un devoir entièrement généré par IA si l'objectif était la créativité ?",
+        correct: "non",
+        feedback: {
+          oui: "❌ Non : cela trahit le principe d’évaluation des apprentissages personnels et de la créativité personnelle.",
+          non: "✅ Correct : l’élève peut utiliser l’IA comme aide, mais le devoir doit être personnel et reformulé. Le jugement humain est clé.",
+          nuance: "⚠️ À condition que l’élève cite l’usage de l’IA et explique sa démarche de co-création. L'intention reste primordiale."
+        }
+      },
+      {
+        question: "L’IA stimule-t-elle la créativité ou ne fait-elle qu'imiter l'existant ?",
+        correct: "nuance",
+        feedback: {
+          oui: "🟢 Oui, elle peut inspirer, générer des idées et diversifier les propositions de point de départ.",
+          non: "❌ Trop catégorique : utilisée avec intention et un bon prompt, elle est un puissant outil de co-création.",
+          nuance: "✅ Exact : l’IA devient un outil de co-création si l’élève reste auteur et critique de ce qu'il produit."
+        }
+      },
+      {
+        question: "Peut-on confier la correction et l'évaluation finale d'un travail à l’IA sans intervention humaine ?",
+        correct: "non",
+        feedback: {
+          oui: "❌ Non, cela compromet l’équité, la légalité et la responsabilité de l’évaluation. Le rôle de l'enseignant est irremplaçable.",
+          non: "✅ Correct : la décision pédagogique et l'évaluation finale doivent rester humaines. L’IA est un outil d’aide à la décision, pas de remplacement.",
+          nuance: "💡 L’IA peut aider à repérer des tendances ou des erreurs formelles, mais ne remplace jamais le jugement de l’enseignant sur le fond."
+        }
+      },
+      {
+        question: "L’anonymisation des copies suffit-elle à protéger les données personnelles des élèves (RGPD) ?",
+        correct: "nuance",
+        feedback: {
+          oui: "❌ Pas totalement : des traces indirectes dans le contenu peuvent permettre d’identifier un élève, et les serveurs doivent être sécurisés.",
+          non: "🟠 Partiellement juste : l’anonymisation est nécessaire, mais insuffisante sans un contrôle strict des outils et serveurs utilisés.",
+          nuance: "✅ Exact : c’est une bonne pratique essentielle, mais elle ne garantit pas une protection complète (risques de ré-identification et de stockage des données)."
+        }
+      },
+      {
+        question: "L’IA aide-t-elle les élèves timides ou éloignés à participer en classe ?",
+        correct: "nuance",
+        feedback: {
+          oui: "🟢 Parfois : les interfaces numériques ou anonymes peuvent encourager la prise de parole pour ceux qui craignent le jugement immédiat.",
+          non: "❌ Non, si elle est mal utilisée, elle risque d’isoler davantage l'élève derrière l’écran et de diminuer les interactions sociales.",
+          nuance: "✅ Exact : cela dépend entièrement du cadre posé par l’enseignant et de l’intégration de l'IA comme outil de médiation et non de substitution."
+        }
+      },
+      {
+        question: "L’IA rend-elle la différenciation plus équitable ou creuse-t-elle les inégalités d'accès aux outils ?",
+        correct: "nuance",
+        feedback: {
+          oui: "❌ Pas forcément : sans accès universel, l’IA peut accentuer la fracture numérique.",
+          non: "🟢 Correct : sans accompagnement et si l'accès est inégal, l’IA peut accentuer les écarts sociaux.",
+          nuance: "✅ Exact : elle a le potentiel de renforcer l’équité si elle est rendue accessible et guidée par des politiques éducatives inclusives."
+        }
+      },
+      {
+        question: "Créer une image ou un texte avec l’IA, est-ce de l’art ou juste de la manipulation d'informations existantes ?",
+        correct: "nuance",
+        feedback: {
+          oui: "💭 Oui, si l’intention créative et le *prompt* viennent clairement de l’humain. C'est une nouvelle forme d'expression.",
+          non: "❌ Non, trop réducteur : la définition de l’art évolue constamment avec l’introduction de nouveaux médiums technologiques.",
+          nuance: "✅ Juste : l’IA devient un médium de co-création pour l'artiste, mais la direction artistique et l’auteur restent humains."
+        }
+      },
+      {
+        question: "Utiliser l’IA pour reformuler un paragraphe sans citer la source initiale, est-ce du plagiat ?",
+        correct: "oui",
+        feedback: {
+          oui: "✅ Exact : ne pas citer la contribution de l’IA, même pour une reformulation, est un manquement à l'honnêteté académique.",
+          non: "❌ Incorrect : même si la formulation est nouvelle, la source d'aide doit être mentionnée (transparence obligatoire).",
+          nuance: "💡 La transparence est toujours préférable. Il faut systématiquement mentionner la participation de l’outil dans le processus de rédaction."
+        }
+      },
+      {
+        question: "L’accès à l'IA creuse-t-il les inégalités sociales entre les élèves ?",
+        correct: "nuance",
+        feedback: {
+          oui: "🟢 Oui, si l’accès aux versions payantes et à la formation n'est pas généralisé pour tous.",
+          non: "❌ Non, sauf si des politiques éducatives fortes compensent les écarts d'accès et d'usage. Le risque est réel.",
+          nuance: "✅ Exact : le risque d’accentuation est fort. Seule une intégration réfléchie et généralisée dans le cadre scolaire peut garantir l'équité."
+        }
+      }
     ];
 
     const dilemmaContainer = document.getElementById("dilemma-container");
+    // Mise à jour de la boucle pour utiliser la nouvelle structure d'objet
     dilemmas.forEach((d,i)=>{
       dilemmaContainer.innerHTML += `
         <div class="p-5 border border-emerald-300 rounded-xl bg-emerald-50 transition shadow-md">
-          <h3 class="font-bold text-gray-800 mb-3">D${i+1} — ${d}</h3>
+          <h3 class="font-bold text-gray-800 mb-3">D${i+1} — ${d.question}</h3>
           <div class="flex gap-3 mt-4">
             <button class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full font-semibold shadow-md transition transform hover:scale-[1.03]" onclick="showD(${i},'oui')">Oui</button>
             <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full font-semibold shadow-md transition transform hover:scale-[1.03]" onclick="showD(${i},'non')">Non</button>
@@ -457,29 +539,32 @@
         </div>`;
     });
 
+    // Mise à jour de la fonction pour utiliser le feedback spécifique de l'objet dilemma
     function showD(i,rep){
       const fb=document.getElementById("d"+i);
-      // Réponses mises à jour pour être plus tranchées
+      const dilemma = dilemmas[i];
+      const feedbackText = dilemma.feedback[rep];
+
+      // Détermination des classes de couleur de fond (basé sur le bouton cliqué pour l'esthétique)
+      let classKey = 'nuance'; 
+      if (rep === 'oui') {
+          classKey = 'oui';
+      } else if (rep === 'non') {
+          classKey = 'non';
+      }
+
       const answers={
-        oui:{
-            text:"⚠️ **Prudence ou Faux :** La réponse est généralement 'non' car cela pose un problème éthique ou contrevient aux bonnes pratiques. L'encadrement par l'enseignant est obligatoire.",
-            class:"text-orange-800 bg-orange-100"
-        },
-        non:{
-            text:"✅ **Correct :** Si l'IA est utilisée comme un simple outil et que les règles de vérification et d'éthique sont respectées, l'impact négatif est faible ou inexistant.",
-            class:"text-green-700 bg-green-100"
-        },
-        nuance:{
-            text:"🎯 **Le Choix Pédagogique :** C'est souvent la réponse la plus juste ! L'impact réel dépend toujours de la manière dont l'enseignant intègre l'IA (le contexte, l'objectif et la médiation sont clés).",
-            class:"text-amber-700 bg-yellow-100"
-        }
+        oui:{ class:"text-red-700 bg-red-100" },      // Utiliser le rouge/orange pour les réponses "risquées" ou "fausses" (oui)
+        non:{ class:"text-green-700 bg-green-100" },  // Utiliser le vert pour les réponses "sûres" ou "correctes" (non)
+        nuance:{ class:"text-amber-700 bg-yellow-100" } // Utiliser le jaune pour la "réflexion" (nuance)
       };
       
-      fb.innerHTML = answers[rep].text; // Utilisation de innerHTML si le HTML est injecté dans le texte (mais ici non, c'est juste du texte)
-      fb.className=`mt-3 p-2 rounded-lg text-sm font-semibold fade-in ${answers[rep].class}`;
+      fb.innerHTML = feedbackText; // Affichage du texte spécifique et tranché
+      fb.className=`mt-3 p-2 rounded-lg text-sm font-semibold fade-in ${answers[classKey].class}`;
     }
   </script>
 
 </body>
 </html>
+
 
